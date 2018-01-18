@@ -13,7 +13,7 @@ Commands:
 * `hostname` (old) - displays hostname
   * `hostname -f` - FQDN
 
-* Key files:
+Key files:
 
 * `/etc/hosts` - local static lookups
 * `/etc/nsswitch.conf` - name service switching
