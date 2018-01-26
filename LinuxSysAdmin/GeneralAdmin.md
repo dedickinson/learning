@@ -3,7 +3,7 @@
 Other docs:
 
 * [Grub](Grub.md)
-* [Run levels](RubLevels.md)
+* [Run levels](RunLevels.md)
 
 ## Kernel and Distribution information
 
