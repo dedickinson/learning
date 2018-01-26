@@ -1,7 +1,36 @@
 # Linux Networking
 
-## General
+Other docs:
 
+* [Firewalls](LinuxNetworkingFirewalls.md)
+* [DNS](LinuxNetworkingDns.md)
+* [Tunnels](LinuxNetworkingTunnels.md)
+
+## Monitoring the network
+
+* ip a s
+* tracepath www.example.com
+* ip -4 a s
+* ip link show
+* ip -s link show 
+* netstat -tln
+* netstat -i
+* netstat -s
+
+Ip and netstat are real time. Sysstat provides historical data
+
+* /etc/chron.d/sysstat
+* /var/log/sa
+* sar -n DEV
+    * Displays sysstat data
+* sar -n DEV 1
+* sar -n DEV 1 3
+
+### Nmap
+* yum install nmap
+* nmap scanme.nmap.org
+* nmap —iflist
+* 
 
 
 ## Hostname
@@ -22,25 +51,6 @@ Key files:
 
 Can use a "pretty name" by providing the hostname in quotes.
 
-## DNS
-
-Tools:
-
-* `dig` - DNS Lookup
-
-Centos:
-
-    yum install -y bind-utils
-
-### Multicast DNS
-
-[`avahi`](https://en.wikipedia.org/wiki/Avahi_%28software%29) is a zeroconf network discrovery service, similar to Bonjour
-
-## System time
-
-* `cronyd` and `ntpd`
-* `date` and `hwclock` commands
-* `timedatectl`
 
 ## IP addresses
 
@@ -91,20 +101,3 @@ NetworkManager is aimed more at desktop/laptop devices rather than services
 * Enable using `iptables -t nat -A POSTROUTING -o enp0s3 -I MASQUERADE `
     * `iptables -t nat -L`
 
-### Firewalling
-
-* `firewalld` or `iptables`
-    * 
-* `firewall-cmd —state`
-* `systemctl start firewalld.service`
-* `firewalld-cmd —get-default-zone`
-* `firewalld-cmd —get-zones`
-* `firewalld-cmd —get-active-zones`
-* `firewalld-cmd —permanent`
-    * persists settings
-* `firewall-cmd —set-default-zone`
-
-#### Setting rules
-
-* `firewall-cmd —list-all`
-* 
