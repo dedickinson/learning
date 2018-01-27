@@ -1,0 +1,34 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+  config.ssh.insert_key = true
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = false
+    vb.memory = "512"
+    vb.cpus = 1
+  end
+
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "playbook-vagrant.yml"
+    ansible.compatibility_mode = "2.0"
+  end
+
+  config.vm.define "bastion" do |bastion|
+    bastion.vm.box = "centos/7"
+
+    config.vm.provider "virtualbox" do |vb|
+      vb.name = "lab-bastion"
+    end
+
+    bastion.vm.network "private_network", 
+                       type: "dhcp",
+                       name: "vboxnet0",
+                       auto_config: true
+
+    
+  end
+  
+end
