@@ -61,6 +61,32 @@ Test the `Vagrantfile` with: `vagrant validate`
 vagrant up bastion
 ````
 
+## Working without Vagrant
+
+### Bastion box
+
+````
+# This creates an interface named: vboxnet<n>
+VBoxManage hostonlyif create
+
+# Create the Bastion VM
+VBoxManage createvm --name lab-bastion --groups "/lab" --ostype RedHat_64 --register
+VBoxManage modifyvm lab-bastion --memory 512 --cpus 1 --audio none --usb off 
+VBoxManage modifyvm lab-bastion --nic1 hostonly
+VBoxManage modifyvm lab-bastion --hostonlyadapter1 vboxnet0
+
+# Create the hard drive
+VBoxManage createmedium disk --filename $HOME/VirtualBox\ VMs/lab/disk/bastion --size 8192 --format VDI 
+VBoxManage storagectl lab-bastion --add sata --name SATA --controller IntelAhci --portcount 1 --bootable on
+VBoxManage storageattach lab-bastion --storagectl SATA --port 0 --type hdd --medium $HOME/VirtualBox\ VMs/lab/disk/bastion.vdi
+
+VBoxManage unattended install lab-bastion --iso=$HOME/VirtualBox\ VMs/CentOS-7-x86_64-Minimal-1708.iso
+````
+
+````
+VBoxManage startvm --type gui lab-bastion
+````
+
 ## Ansible
 
 ````
