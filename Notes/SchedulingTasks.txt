@@ -1,0 +1,70 @@
+# Scheduling tasks
+
+## Scripts for system maintenance
+
+First line: 
+
+    #!/usr/bin/bash
+
+## cron
+
+    /etc/crontab
+
+Every 10 mins: */10
+Every hour in range: 8-18
+Mon to Fri: 1-5
+
+The MAILTO setting in crontab is the account to which any cron jobs not piping output to a file.
+
+To create a user cron:
+
+     crontab -e
+
+Users can’t designate the user under which the entry runs.
+
+List cron jobs:
+
+    crontab -l
+
+Service:
+
+    systemctl status crond
+
+# anacron
+
+Cron jobs scheduled when system isn’t on won’t be run. anacron helps here.
+
+    /etc/anacrontab
+
+An example job might be set to run 45 mins after the system has started.
+
+Cron runs the anacron system: /etc/cron.hourly/0anacron
+
+# at
+
+Used for once off jobs.
+
+    Systemctl status atd
+
+Example:
+
+    at noon
+
+Then provide commands and ctrl-d
+
+List at tasks
+
+    atq
+
+Remove task 5
+
+    atrm 5
+
+## Denying schedule use
+
+    /etc/cron.deny
+    /etc/at.deny
+
+If you create a .allow file, only members listed there can use cron/at
+
+

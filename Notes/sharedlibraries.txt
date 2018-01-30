@@ -1,0 +1,34 @@
+# Shared libraries
+
+View shared libraries for an application
+
+    ldd /usr/bin/ls
+
+View library modules for current shell:
+
+    pmap $$
+
+## Locations
+
+    /lib
+    /lib64
+
+Can be symbolic links to /usr/lib and /usr/lib64
+
+To change the location, add to
+
+    /etc/ld.so.conf.d
+
+Set the so file as executable
+
+Create a file in /etc/ld.so.conf.d with 1 line - the path
+
+Environment variable can also be used LD_LIBRARY_PATH 
+
+## Library cache
+
+    ldconfig -p
+    ls -l /ld.so.cache
+    ldconfig #update cache
+    ldconfig -v # verbose update
+

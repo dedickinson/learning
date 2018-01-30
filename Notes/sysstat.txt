@@ -1,0 +1,44 @@
+# Sysstat
+
+## Install and configure
+
+Yum install -y sysstat
+
+Includes lmsensors
+
+/etc/cron.d/sysstat is created to compile reports
+
+cat /etc/sysconfig/sysstat
+
+systemctl start sysstat
+systemctl enable sysstat
+
+## Additional tools
+
+Disk activity: iostat
+
+    iostat -m 5 3
+
+CPU stats for a process: pidstat -p $$ 5 3
+
+mpstat
+
+## Reporting Using sar
+
+sar: system activity report
+
+    sar
+    sar -u
+    sar -r
+    sar -b
+    sar -n
+    sar -q
+    sar -s 14:50:00 -e 15:10:00
+    sar -s 14:50:00 -e 15:10:00 -f /var/log/sa/sa15
+
+Log files: /var/log/sa
+
+
+
+
+

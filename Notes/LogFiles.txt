@@ -1,0 +1,29 @@
+# Log files
+
+## Auditing logins
+
+As root, use “lastlog” to list last logins. To view only users that have logged in:
+
+    lastlog | grep -v “Never”
+
+“last” lists the last logins. “last -n 10” to limit entries
+
+To view reboots:
+
+    last reboot
+
+For a user:
+
+    last duncan
+
+Data is from /var/wtmp 
+
+Bad logins:
+
+    Sudo lastb
+
+Data is from /var/btmp
+
+## Auditing root access
+
+    /var/log/

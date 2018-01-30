@@ -1,0 +1,100 @@
+Notes
+
+# Managing processes
+
+## The kill command
+
+List shortcuts: stty -a
+
+List all kill signals: kill -l
+
+Default signal is “term” (equivalent to -15 and sigterm)
+
+
+## pgrep and pkill
+
+List all sshd process IDs: pgrep sshd
+
+Details for processes: ps -F -p $(pgrep sshd)
+
+Kill all sleep processes: pkill sleep
+
+## The top command
+
+Press the f key to configure field sorting
+
+# Process priority
+
+## Backgrounding tasks
+
+bg - background task
+fg - foreground task
+jobs - list of tasks
+
+Ctrl-z suspends a running process
+
+In bash shells, a background task keeps running when the shell has exited. Systemd becomes the parent process.
+
+## Process priorities
+
+Display process priority and nice value: ps -l
+
+Nice value range: -20 to +19
+
+The higher the nice value, the lower the priority.
+
+Start a low priority task: nice -n 19 sleep 1000 
+
+Regular users can only use nice natures >=0
+
+“renice” sets the priority of a running process. Can’t raise the priority as a regular user.
+
+To change the default priority: /etc/security/limits.conf
+
+# Monitoring performance
+
+## Package: procps-ng
+
+* ps, pgrep, pkill
+* top
+* free - display free memory
+
+### pmap, pwdx
+
+pmap displays a memory map for the nominated process
+
+pwdx displays the working directory for a process. Uses /proc/<id>/cwd value
+
+    sudo pwdx $(grep sshd)
+
+### uptime, watch and tload
+
+Uptime Displays server uptime and stats
+
+/proc/uptime
+/proc/loadavg
+
+Watch provides a running display of uptime.
+
+tload displays cpu utilisation in near-real time
+
+### w
+
+Fancy who with stats
+
+### lscpu
+
+lists the cpus on the system
+
+### top and vmstat
+
+Batch mode: top -b 
+
+vmstat - stats for procs, memory, swap, cpu, io
+
+# sysstat
+
+
+
+
+
