@@ -11,6 +11,8 @@ Setup the TFTP folders:
 
 ````
 export VBOX_USER_HOME=$HOME/Library/VirtualBox
+export BUILDER_VM=builder
+export VBOX_HOME=$HOME/VirtualBox\ VMs
 mkdir -p $VBOX_USER_HOME/TFTP/{pxelinux.cfg,images/centos/7}
 cp -R tftp/* $VBOX_USER_HOME/TFTP/
 ````
@@ -31,20 +33,22 @@ rm -rf tmp
 
 ### Get ramdisk and kernel images
 
+_Note_: you must get the files for the version you intend to install (the version on the install media) - otherwise
+the installer will fail.
+
 ````
 wget -P $VBOX_USER_HOME/TFTP/images/centos/7/ http://mirror.centos.org/centos/7/os/x86_64/images/pxeboot/{initrd.img,vmlinuz}
 ````
 
 ## Build a new VM
 
+### Configure the VM in VirtualBox
+
 ````
 mkdir -p $HOME/VirtualBox\ VMs/lab/disk/
 
 VBoxManage dhcpserver add --netname builder --ip 192.168.200.1 --netmask 255.255.255.0  \
                             --lowerip 192.168.200.50 --upperip 192.168.200.99 --enable
-
-BUILDER_VM=builder
-VBOX_HOME=$HOME/VirtualBox\ VMs
 
 # Create the Bastion VM
 VBoxManage createvm --name $BUILDER_VM --groups "/build" --ostype RedHat_64 --register
@@ -62,21 +66,19 @@ VBoxManage storageattach $BUILDER_VM --storagectl SATA --port 0 --type hdd --med
 VBoxManage storagectl $BUILDER_VM --add ide --name IDE
 VBoxManage storageattach $BUILDER_VM --storagectl IDE --port 1 --device 0 --type dvddrive --medium "$VBOX_HOME/iso/CentOS-7-x86_64-Minimal-1708.iso"
 ````
- ## Get building
 
+ ### Get building
 
-
- 1. Open a terminal and cd into the `http` directory. Then start up a web server with `python -m http.server`
+ 1. Open another terminal and cd into the `http` directory. Then start up a web server with `python -m http.server`
  1. Then start the VM: `VBoxManage startvm $BUILDER_VM --type gui`
-
-    VBoxManage startvm $BUILDER_VM --type gui
 
 ## Other stuff
 
 * Delete the VM and its disks: `VBoxManage unregistervm $BUILDER_VM --delete`
 
-## Discarded
+## Variations
 
+### Load the install files from a network resource
 
 Mount the ISO (used in an attempt to install over the network: 
  
