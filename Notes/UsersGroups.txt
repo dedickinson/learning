@@ -1,0 +1,101 @@
+# Users and groups
+
+    /etc/passwd # local users
+
+    getent passwd 
+
+    # name services:
+    grep passwd /etc/nsswitch.conf
+
+    # view databases from nsswitch
+    getent group
+    getent networks
+    getent services
+
+## Login scripts
+
+Login shells (su -l) vs non login shells (su)
+
+The login shell is a new login via ssh, console, su - or su -l
+
+Non-login shells occur when calling su (no Params) or bash
+
+Login shells run:
+
+1. /etc/profile
+1. ~/.bash_profile
+1. ~/.bashrc (called by ~/.bash_profile)
+1. /etc/bashrc (called by ~/.bashrc)
+
+Non login shells run:
+
+1. ~/.bashrc (called by ~/.bash_profile)
+1. /etc/bashrc (called by ~/.bashrc)
+
+To determine user context:
+
+* echo $USER
+* id
+* whoami
+
+But some things don’t change over for a non login shell. E.g. $USER won’t change
+
+Logout scripts:
+
+* 
+
+## System login scripts
+
+    cd
+    ls profile*
+    ls bash*
+
+/etc/profile.d/ contains profile scripts
+
+Prompt ($PS1) is set in bashrc 
+
+Don’t set PATH in rc files as it keeps appending each call to bash - set it in profile files
+
+Need to export variables in profile files
+
+## Home directory templates
+
+    ls -A /etc/skel
+
+Holds templates used when a new home dir has been created
+
+## User accounts
+
+    id # current account
+    id root
+
+    id -g
+    id -G
+    id -Gn
+
+### Creating accounts
+
+    sudo useradd fred
+
+    sudo useradd -N jane -g users -G staff
+
+    sudo useradd jim -G staff -s /bin/sh
+
+Passwords
+
+    sudo passwd jane 
+
+    sudo grep jane /etc/shadow
+
+    echo ‘fred:paasword1’| sudo chpasswd
+
+     
+
+
+
+
+
+
+
+
+

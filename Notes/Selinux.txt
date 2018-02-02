@@ -1,0 +1,68 @@
+# SELinux
+
+## Modes and context
+
+Example for seeing the context on a file:
+
+    ls -Z /etc/shadow
+
+Determine current mode
+
+    getenforce
+    sestatus
+
+Config: /etc/selinux/config
+
+Change enforce mode
+
+    setenforce 0
+    setenforce 1
+
+Check process context:
+
+    ps -Z
+
+Check user
+
+     id -Z
+
+## Log files
+
+    /var/log/audit/audit.log
+
+    ausearch -m avc
+    
+
+Change context
+
+    chcon -t unlabelled_t /etc/shadow 
+
+To restore
+
+    restorecon /etc/shadow
+
+To manage
+
+    semanage fcontext -l
+
+Listed in
+
+    /etc/selinux/targeted/contexts/files
+
+## Modifying policies
+
+SELinux Booleans
+
+    getsebool -a
+
+    semanage boolean -l
+
+    getsebool http_read_user_content
+    setsebool http_read_user_content on
+    setsebool -P http_read_user_content on # makes config permanent 
+
+### Working with network ports
+
+    semanage port -l
+
+    semanage port -a -t ssh_port_t -p tcp 2222

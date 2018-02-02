@@ -3,6 +3,9 @@
   yum: name={{ item }} state=present
   with_items:
     - openssh-server
+    - epel-release
+    - fail2ban
+    - bash-completion
 
 - name: Make sure we have a 'wheel' group
   group:
@@ -30,3 +33,8 @@
     state: present
     key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDcQRRFriF1j1IP3LmJ+GaceymxHdOoX/1nsQroDtnCHzTyhsr6ifHZNsbA9LIAXj/UVtrEUPfLfmLGC+PTDBeoIhuO4L6/ezVi+CGH5T1EuT9hQ23j4mP1St0E/CFVy44Z/Hb3KJ16wBpMZz7ki/6xc1NSAI5E3rInX+hYg3dnkOgXP92B+ighUmjy9IGtci+kAVtO0MsqEKgFqxNbFmSo+bV1VUL7gXlpJNYL22dvCrrJkeNINWXbAma3SEZt7lkI6JuM8/tYEaAOApqmlsN5t2/I2QEyXDRvbf2LpR3qR/cEpEQzMPdBCXFC+I1SgwPqLaQiXJEEJn5RilIsQfEr ansible@lab.local"
 
+- name: fail2ban service
+  service:
+    name: fail2ban
+    enabled: yes
+    state: started
