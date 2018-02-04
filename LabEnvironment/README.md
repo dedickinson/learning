@@ -2,6 +2,12 @@
 
 ## Ansible
 
-````
-ansible-playbook -i ansible-hosts.yml playbook.yml
-````
+Configuration file: `ansible.cfg`
+
+To validate a playbook:
+
+    ansible-playbook --check site.yml
+
+To run the playbook:
+
+    ansible-playbook site.yml

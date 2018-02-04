@@ -1,0 +1,8 @@
+---
+- hosts: all
+  roles:
+  - base-server
+
+- hosts: router
+  roles:
+  - router

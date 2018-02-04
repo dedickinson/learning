@@ -1,0 +1,9 @@
+---
+- hosts: all
+  tasks:
+  - name: upgrade all security patches, excluding kernel
+    yum:
+      name: '*'
+      state: latest
+      security: yes
+      exclude: kernel*

@@ -69,7 +69,7 @@ VBoxManage storageattach $BUILDER_VM --storagectl IDE --port 1 --device 0 --type
 
  ### Get building
 
- 1. Open another terminal and cd into the `http` directory. Then start up a web server with `python -m http.server`
+ 1. Open another terminal and cd into the `http` directory. Then start up a web server with `python -m http.server 8000`
  1. Then start the VM: `VBoxManage startvm $BUILDER_VM --type gui`
 
 ## Other stuff

@@ -17,6 +17,10 @@ Other docs:
 * netstat -i
 * netstat -s
 
+Check out an interface
+
+    ethtool eth0
+
 Ip and netstat are real time. Sysstat provides historical data
 
 * /etc/chron.d/sysstat

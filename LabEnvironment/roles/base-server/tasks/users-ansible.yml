@@ -1,0 +1,13 @@
+---
+- name: Make sure the ansible user exists
+  user:
+    name: ansible
+    comment: "Ansible service account"
+    state: present
+    groups: wheel
+
+- name: Set the ansible user's authorized key
+  authorized_key:
+    user: ansible
+    state: present
+    key: "{{ lookup('file', ansible_ssh_public_key_file) }}"

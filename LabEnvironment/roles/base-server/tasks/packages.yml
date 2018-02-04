@@ -1,0 +1,15 @@
+---
+- name: Configure the EPEL repo
+  yum: name=epel-release state=present
+  
+- name: Make sure we have the packages we need
+  yum: name={{ item }} state=present
+  with_items:
+    - openssh-server
+    - fail2ban
+    - bash-completion
+
+- name: Remove packages we do not need
+  yum: name={{ item }} state=removed
+  with_items:
+    - NetworkManager
