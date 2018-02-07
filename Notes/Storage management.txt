@@ -1,0 +1,12 @@
+# Storage management
+
+List block devices
+
+    lsblk
+
+Sda is a fixed drive - ide, Sata etc. sdb is the second disk etc
+
+LVMs are dynamic allocations of disk space
+
+## Partitioning disks
+

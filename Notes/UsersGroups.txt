@@ -89,7 +89,117 @@ Passwords
 
     echo ‘fred:paasword1’| sudo chpasswd
 
-     
+    chpasswd
+
+### Password age
+
+    chage -tux
+
+Shadow file allows passwords to be inaccessible to regular users
+
+Move passwords in and out of /etc/passwd:
+
+    pwunconv 
+    pwconv
+
+chage can be used to set password ageing 
+
+Password ageing data is in /etc/shadow
+
+To lock an account
+
+    sudo passwd -l user1
+
+The user’s password will now be prefixed with !! In shadow
+
+To unlock
+
+    ?
+
+## User defaults
+
+    less /etc/login.defs
+
+Range of settings available, including password age controls, home fir creation, home umask, password encryption algorithm
+
+Review defaults:
+
+    sudo useradd -D
+    sudo cat /etc/default/useradd
+
+Change the default: 
+
+    sudo useradd -Ds /bin/sh
+
+### Modify and delete accounts
+
+    sudo usermod -c “User One” user1
+
+A user can change their shell:
+
+    chsh -l
+    chsh -s /bin/sh tux
+
+To delete a user and their home directory:
+
+    sudo userdel -r user1
+
+To clean up files from a deleted user (who had user id 1004):
+
+    sudo find /home -uid 1004 -delete
+
+## Groups
+
+    /etc/group
+
+To change group,  the user can
+
+    newgrp wheel
+    # use exit to drop back after creating resources etc
+
+To create a group:
+    
+    sudo groupadd sales
+
+Group passwords are set in /etc/gshadow but they don’t usually have passwords
+
+### Membership
+
+    id -G
+    id -Gn
+    id -gn
+
+To modify a user’s group, use usermod
+
+    sudo gpasswd -a fred sales
+    sudo gpasswd -M fred,jane sales
+
+Set group admins using gpasswd -A
+
+Group membership changes require users to logout and login
+
+### SGID
+
+    sudo yum install httpd w3m
+    sudo systemctl status httpd
+    ls -la /var/www/html
+    grep apache /etc/group
+    sudo chgrp -R apache /var/www
+    sudo chmod -R o= /var/www
+    
+    sudo -i
+    cd /var/www
+    chmod g+s .
+    umask 027
+    vi test.html
+
+### Group passwords
+
+Change primary group id, use newgrp sales
+
+Set a group password to allow users to switch to a group they’re not a member of. But this uses a shared password and is silly.
+
+
 
 
 
