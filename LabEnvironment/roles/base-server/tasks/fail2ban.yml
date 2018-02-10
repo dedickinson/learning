@@ -1,0 +1,12 @@
+---
+- name: Install fail2ban
+  yum: 
+    name: fail2ban
+    state: present
+
+- name: Ensure fail2ban service is enabled and running
+  service:
+    name: fail2ban
+    enabled: yes
+    state: started
+    

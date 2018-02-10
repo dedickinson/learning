@@ -1,0 +1,9 @@
+---
+- name: Copy over the logrotate configuration
+  copy:
+    src: "{{ role_path }}/files/etc/logrotate.conf"
+    dest: /etc/logrotate.conf
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes

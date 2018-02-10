@@ -1,7 +1,11 @@
 ---
-- import_tasks: packages.yml
-- import_tasks: services.yml
-- import_tasks: sshd.yml
-#- import_tasks: firewall.yml
 - import_tasks: users.yml
 - import_tasks: users-ansible.yml
+- import_tasks: packages.yml
+- import_tasks: sshd.yml
+- import_tasks: fail2ban.yml
+- import_tasks: chrony.yml
+- import_tasks: sysstat.yml
+- import_tasks: logrotate.yml
+#- import_tasks: firewall.yml
+

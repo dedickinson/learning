@@ -47,12 +47,6 @@ END
 wall < message
 ````
 
-## System time
-
-* `cronyd` and `ntpd`
-* `date` and `hwclock` commands
-* `timedatectl`
-
 ## Managing processes
 
 

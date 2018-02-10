@@ -1,0 +1,12 @@
+---
+- name: Install sysstat
+  yum: 
+    name: sysstat
+    state: present
+
+- name: Ensure sysstat service is enabled and running
+  service:
+    name: sysstat
+    enabled: yes
+    state: started
+    

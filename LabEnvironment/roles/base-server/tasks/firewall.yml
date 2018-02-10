@@ -1,1 +1,11 @@
 ---
+- name: Make sure SSH server is installed
+  yum:
+    name: firewalld
+    state: present
+
+- name: Ensure firewalld is enabled and running
+  service:
+    name: firewalld
+    enabled: yes
+    state: started

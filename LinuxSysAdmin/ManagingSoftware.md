@@ -1,6 +1,6 @@
 # Managing software
 
-# Using RPMS
+## Using RPMS
 
     yum install httpd # select d to download only
 
@@ -8,19 +8,19 @@
 
     cd /var/cache/yum/x84_64/7/base/packages/
 
-List all packages currently installed
+List all packages currently installed:
 
     rpm -qa
 
-Query a package
+Query a package:
 
     rpm -qi nmap
 
     rpm -qpl httpd...
 
-To install: rpm -i x.rpm
+To install: `rpm -i x.rpm`
 
-To remove: rpm -e nmap
+To remove: `rpm -e nmap`
 
 To query the source package of a file
 
@@ -60,7 +60,7 @@ Can create a local repo by hosting the CD files behind a web server. Then config
 
 ### YUM cache
 
-    /var/cache/yum
+    tree /var/cache/yum
 
     yum makecache
 
