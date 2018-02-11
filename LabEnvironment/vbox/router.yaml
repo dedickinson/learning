@@ -4,6 +4,7 @@
 
   vars_files:
     - ~/.ansible-vaults/lab.yml
+    - vars.yml
 
   vars:
     - ansible_user_pub_key: "{{ lookup('file', '~/.ssh/ansible.pub') }}"
@@ -29,9 +30,18 @@
           exit 1
         fi
 
-    - name: Configure the VM
-      shell: |
-        scripts/config-vm-base.sh {{ vm_name }}
+    - name: Configure the VM Base
+      command: |
+        scripts/config-vm-base.sh {{ vm_name }} lab
+    
+    - name: Configure the VM specifics
+      command: |
         scripts/config-router.sh {{ vm_name }}
-        scripts/attach-hdd.sh {{ vm_name }} {{ vbox_disk_path }}
-        scripts/attach-installdvd.sh {{ vm_name }} {{ vm_iso_path }}
+
+    - name: Attach a hard drive
+      command: |
+        scripts/attach-hdd.sh {{ vm_name }} "{{ vbox_disk_path }}"
+
+    - name: Attach the install ISO
+      command: |
+        scripts/attach-installdvd.sh {{ vm_name }} "{{ vm_iso_path }}"

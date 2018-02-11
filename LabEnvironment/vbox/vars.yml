@@ -1,9 +1,10 @@
 ---
 vbox_user_home: "~/Library/VirtualBox"
 vbox_home: "~/VirtualBox\ VMs"
-vbox_disk_path: "{{ vbox_home }}/lab/disk"
 
-vm_iso_path: "{{ vbox_home }}/iso/CentOS-7-x86_64-Minimal-1708.iso"
+vbox_disk_path: "~/VirtualBox\ VMs/lab/disk"
+
+vm_iso_path: "~/VirtualBox\ VMs/iso/CentOS-7-x86_64-Minimal-1708.iso"
 
 vm_group_name: lab
 

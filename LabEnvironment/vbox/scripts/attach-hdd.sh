@@ -1,3 +1,4 @@
+#!/bin/bash -e
 # Create a hard drive for a VM and attach it
 
 vm_name=$1
