@@ -1,0 +1,39 @@
+---
+- hosts: localhost
+  connection: local
+
+  vars_files:
+    - vars.yml
+
+  tasks:
+    - name:
+      command: ssh-keygen -C ansible@lab.local -f ~/.ssh/ansible
+      args:
+        creates: ~/.ssh/ansible.pub
+
+    - name: Create the Hostonly interface
+      command: scripts/config-hostonlyif.sh {{ hostonlyif.ipaddr }} {{ hostonlyif.name }}
+
+    - name: Configure the lab vault
+      command: scripts/prepare-ansible-vault.sh {{ vault.dir }} {{ vault.name }}
+      args:
+        creates: "{{ vault.dir }}/{{ vault.name }}"
+
+    - name: Configure the TFTP assets for VirtualBox PXE boot
+      command: scripts/prepare-vbox-tftp.sh {{ vbox_user_home }}
+      args:
+        creates: "{{ vbox_user_home }}/TFTP/images/centos/7/initrd.img"
+
+    - name: Copy the PXE boot config file
+      copy:
+        src: tftp/pxelinux.cfg
+        dest: "{{ vbox_user_home }}/TFTP/"
+        directory_mode: u=rwx,g=rx,o=rx
+        mode: u=rw,g=r,o=r
+    
+    - name: Make sure our disk storage folder exists
+      file:
+        path: "{{vbox_disk_path}}"
+        state: directory
+        mode: u=rwx,g=rx,o=rx
+

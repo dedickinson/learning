@@ -1,5 +1,6 @@
 **/.vagrant/
 *.retry
 **/tmp
-LabEnvironment/ansible.log
-LabEnvironment/webserver.log
+**/.tmp*/
+ansible.log
+webserver.log

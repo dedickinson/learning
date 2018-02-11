@@ -1,0 +1,50 @@
+install
+cdrom
+text
+lang en_US.UTF-8
+keyboard us
+
+# This is the NAT network
+network --device eth0 --onboot yes --bootproto dhcp
+
+# The Hostonly network
+network --device eth1 --onboot yes --bootproto static --ip=192.168.200.10 --netmask=255.255.255.0 
+
+# The bridged network
+network --device eth2 --onboot yes --bootproto dhcp
+
+# This is the Internal network
+network --device eth3 --onboot yes --bootproto static --ip=172.16.1.1 --netmask=255.255.255.0
+network --device eth4 --onboot yes --bootproto static --ip=172.16.100.1 --netmask=255.255.255.0
+network --device eth5 --onboot yes --bootproto static --ip=172.16.200.1 --netmask=255.255.255.0
+
+firewall --enabled --ssh --trust=eth1
+authconfig --enableshadow --enablemd5
+selinux --permissive
+timezone --utc Australia/Brisbane
+services --enabled=sshd
+skipx
+
+# To generate password use: openssl passwd -1 -salt abc yourpass
+rootpw --iscrypted {{ root_user_password | mandatory }} --lock
+user --name=ansible --groups=wheel --uid=5001 --gid=5001 --password={{ ansible_user_password | regex_replace('\$', '\\\$') | mandatory }} --iscrypted
+
+bootloader --location=mbr
+zerombr
+clearpart --all --initlabel
+autopart --type=plain --fstype xfs --nohome
+
+poweroff --eject
+
+%packages 
+@core
+%end
+
+%post 
+mkdir /home/ansible/.ssh
+cat >/home/ansible/.ssh/authorized_keys<<EOM
+{{ ansible_user_pub_key | mandatory }}
+EOM
+
+sed --in-place=.bak -e 's/^%wheel.*/%wheel ALL=\(ALL\) NOPASSWD: ALL/' /etc/sudoers
+%end

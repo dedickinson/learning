@@ -1,0 +1,16 @@
+---
+vbox_user_home: "~/Library/VirtualBox"
+vbox_home: "~/VirtualBox\ VMs"
+vbox_disk_path: "{{ vbox_home }}/lab/disk"
+
+vm_iso_path: "{{ vbox_home }}/iso/CentOS-7-x86_64-Minimal-1708.iso"
+
+vm_group_name: lab
+
+vault:
+    dir: ~/.ansible-vaults
+    name: lab.yml
+
+    hostonlyif:
+    ipaddr: 192.168.200.1
+    name: vboxnet0

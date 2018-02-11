@@ -1,7 +1,7 @@
 PROMPT 0
 NOESCAPE 0
 ALLOWOPTIONS 0
-TIMEOUT 200
+TIMEOUT 100
 
 ### TUI
 DEFAULT menu.c32
@@ -23,10 +23,4 @@ LABEL centos7
   MENU LABEL ^2. CentOS 7 Install for Router
   KERNEL images/centos/7/vmlinuz
   APPEND initrd=images/centos/7/initrd.img ks=http://10.0.2.2:8000/kickstart/centos-ks-router.cfg ip=dhcp ksdevice=eth0 ramdisk_size=10000 ipv6.disable=1 biosdevnames=0 net.ifnames=0 unsupported_hardware text
-END
-
-LABEL centos7
-  MENU LABEL ^3. CentOS 7 Install
-  KERNEL images/centos/7/vmlinuz
-  APPEND initrd=images/centos/7/initrd.img ks=http://10.0.2.2:8000/kickstart/centos-ks.cfg ip=dhcp ksdevice=eth0 ramdisk_size=10000 ipv6.disable=1 biosdevnames=0 net.ifnames=0 unsupported_hardware text
 END
