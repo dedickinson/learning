@@ -1,8 +1,10 @@
 ---
 - hosts: localhost
   connection: local
+  gather_facts: no
 
   vars_files:
+    - ~/.ansible-vaults/lab.yml
     - vars.yml
 
   tasks:
@@ -19,6 +21,12 @@
       args:
         creates: "{{ vault.dir }}/{{ vault.name }}"
 
+    - name: Prep the VirtualBox TFTP directory
+      file:
+        path: "{{ vbox_user_home }}/TFTP/"
+        state: directory
+        mode: u=rwx,g=rx,o=rx
+
     - name: Configure the TFTP assets for VirtualBox PXE boot
       command: scripts/prepare-vbox-tftp.sh {{ vbox_user_home }}
       args:
@@ -30,10 +38,14 @@
         dest: "{{ vbox_user_home }}/TFTP/"
         directory_mode: u=rwx,g=rx,o=rx
         mode: u=rw,g=r,o=r
-    
+
     - name: Make sure our disk storage folder exists
       file:
         path: "{{vbox_disk_path}}"
         state: directory
         mode: u=rwx,g=rx,o=rx
+
+    - name: Provision the VMs
+      include_tasks: "tasks/provision-{{ item.name }}.yml"  
+      with_items: "{{ vms }}"
 

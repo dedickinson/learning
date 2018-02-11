@@ -26,29 +26,26 @@ other platforms.
 
 Preparing the Lab environment is done through an Ansible playbook:
 
-    ansible-playbook -v base.yml
+    ansible-playbook -v lab-provision.yml --ask-vault-pass
 
-## The Router VM
+This configures all VMs, ready to start installs. Refer to the __Working with the Virtual Machines__ for OS installation details.
+
+Once all VMs have had an OS installed, the quick way to start everything up is:
+
+    ansible-playbook -v lab-start.yml
+
+## Working with the Virtual Machines
+
+### The Router VM
 
 The Router VM (`router.lab.example.com`) is the central networking VM and needs to be started up first. It also
 has some specific requirements as no other lab components exist before it starts up.
 
 VirtualBox provides the ability to [run PXE Boots on NAT interfaces](https://www.virtualbox.org/manual/ch06.html#nat-tftp) and this is used to install the Router VM.
 
-Run the `router.yaml` playbook to prepare the files we'll need:
+Run the `lab-vm-start.yml` playbook to start an install:
 
-    ansible-playbook router.yaml --ask-vault-pass
-
-````bash
-# Setup the TFTP folders
-./prepare-vbox-tftp.sh
-
-# Configure the Router VM
-./config-router router
-
-# Start the Router VM
-./start-vm.sh router
-````
+    ansible-playbook -v lab-vm-start.yml --extra-vars "vm_name=router"
 
 In the PXE boot user interface, select the install option for the router. This will install and configure CentOS.
 
@@ -56,9 +53,6 @@ The host-only network card for the router VM is configured on `192.168.200.10` a
 
 Once the installation has completed, start it back up:
 
-````bash
-./start-vm.sh router
-````
 
 Change over to the `ansible` directory and configure the VM:
 

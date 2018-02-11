@@ -43,7 +43,7 @@ poweroff --eject
 %post 
 mkdir /home/ansible/.ssh
 cat >/home/ansible/.ssh/authorized_keys<<EOM
-{{ ansible_user_pub_key | mandatory }}
+{{ ansible_ssh_public_key_file | mandatory }}
 EOM
 
 sed --in-place=.bak -e 's/^%wheel.*/%wheel ALL=\(ALL\) NOPASSWD: ALL/' /etc/sudoers

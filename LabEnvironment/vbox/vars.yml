@@ -1,4 +1,6 @@
 ---
+ansible_ssh_public_key_file: ~/.ssh/ansible.pub
+
 vbox_user_home: "~/Library/VirtualBox"
 vbox_home: "~/VirtualBox\ VMs"
 
@@ -8,10 +10,14 @@ vm_iso_path: "~/VirtualBox\ VMs/iso/CentOS-7-x86_64-Minimal-1708.iso"
 
 vm_group_name: lab
 
+vms:
+    - name: router
+      description: Network router and services
+
 vault:
     dir: ~/.ansible-vaults
     name: lab.yml
 
-    hostonlyif:
+hostonlyif:
     ipaddr: 192.168.200.1
     name: vboxnet0

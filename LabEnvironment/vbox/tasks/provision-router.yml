@@ -1,0 +1,22 @@
+---
+- name: Configure the Router's kickstart file
+  template:
+    src: "templates/centos-ks-router.cfg.j2"
+    dest: "http/kickstart/centos-ks-router.cfg"
+
+- name: Configure the VM Base
+  command: |
+    scripts/config-vm-base.sh {{ item.name }} lab
+
+- name: Configure the VM specifics
+  command: |
+    scripts/config-router.sh {{ item.name }}
+
+- name: Attach a hard drive
+  command: |
+    scripts/attach-hdd.sh {{ item.name }} "{{ vbox_disk_path }}"
+
+- name: Attach the install ISO
+  command: |
+    scripts/attach-installdvd.sh {{ item.name }} "{{ vm_iso_path }}"
+

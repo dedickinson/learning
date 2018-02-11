@@ -1,0 +1,27 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  
+  vars_files:
+    - vars.yml
+
+  tasks:
+    - name: Remove all listed VMs if they exist
+      shell: |
+        vm_name={{ item.name }}
+        vm_exists=$(VBoxManage list vms | grep "$vm_name" | cut -f 1 -d " "| tr -d '"')
+        if [ "$vm_exists" == "$vm_name" ]; then
+            VBoxManage unregistervm $vm_name --delete
+        fi
+      with_items: "{{ vms }}"
+      
+    - name: Clear the VirtualBox TFTP files
+      file:
+        path: "{{ vbox_user_home }}/TFTP/"
+        state: absent
+
+    - name: Delete all host-only interfaces
+      shell: |
+        VBoxManage list hostonlyifs|grep ^Name:|tr -s ' '|cut -d ' ' -f2|xargs -I{} VBoxManage hostonlyif remove {}
+        VBoxManage dhcpserver remove --netname HostInterfaceNetworking-vboxnet0

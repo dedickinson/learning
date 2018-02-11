@@ -1,0 +1,19 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  vars_files:
+    - vars.yml
+
+  tasks:
+    - name: Start the web server to be used by NAT-based VMs to PXE boot
+      shell: |
+        if [ "$(lsof -i -P -n | grep "TCP \*:8000 (LISTEN)"|cut -c 11-14)" == "" ]; then
+            cd http 
+            python -m http.server > ../webserver.log &
+        fi
+
+    - name: Start the requested VM
+      command: |
+        VBoxManage startvm {{ vm_name }}
