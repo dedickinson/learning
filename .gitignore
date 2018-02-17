@@ -4,3 +4,4 @@
 **/.tmp*/
 ansible.log
 webserver.log
+LabEnvironment/vbox/http/kickstart/centos-ks-router.cfg
