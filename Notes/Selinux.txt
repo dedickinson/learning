@@ -1,5 +1,81 @@
 # SELinux
 
+Mandatory access control
+
+Kernel module, policy files and tools
+
+Selinux is in addition to standard Linux permissions
+
+Selinux limits the resources a service can access, even when run as root.
+
+## Security contexts
+
+Added to files, view with
+
+    ls -Z
+
+Contexts are made up of
+
+- user
+- role
+- type
+- level
+
+The user is an selinux user, not a Linux user.
+
+To see process details
+
+    ps xZ
+
+Ordinary users run in the unconfined domain as the traditional access controls are enough. The focus is on processes with elevated privileges.
+
+Example:
+
+    ls -Z /bin/passwd
+
+Has policy type passwd_exec_t that allows transition to the passwd_t domain:
+
+    ps -xZ | grep passwd
+
+The /etc/shadow file has type shadow_t and the policy allows the passwd_t domain to write to shadow_t file types.
+
+## Commands
+
+Current status:
+
+    sestatus
+
+Reports on /etc/selinux/config
+
+Change the mode
+
+    setenforce
+
+Package: setools-console
+
+    seinfo
+    seinfo -x
+    seinfo —stats
+
+To fix a mislabelled web file:
+
+    ls -Z <file>
+    setenforce 0
+    
+To find the audit log file:
+
+    pgrep auditd
+    lsof <id>
+    
+Log is /var/log/audit
+
+    grep AVC /var/log/audit/audit.log
+
+Find “denied” entry.
+
+    restorecon <file>
+    
+
 ## Modes and context
 
 Example for seeing the context on a file:

@@ -10,3 +10,232 @@ LVMs are dynamic allocations of disk space
 
 ## Partitioning disks
 
+Linux file system overview:
+
+Withitn the disk is an MBR partition table (max 2Tb) with max 4 primary partitions and up to 15 logical partitions on one primary partition. 
+
+Alternatively there’s a GUID partition of up to 8ZB that can have up to 128 partitions. Linux SCSI drivers limit this to 15.
+
+On top of the partitions is a file system such as xfs or ext4
+
+Three partitioning tools: fdisk, gdisk, parted
+
+### fdisk
+
+    lsblk
+    # we’ll used sdb
+
+    fdisk -l /dev/sdb
+
+To create partitions:
+
+    fdisk /dev/sdb
+
+Create a new primary by pressing n. 
+
+Change the type by pressing t - eg to setup a swap partition 
+
+Write the partition table with w. 
+
+lsblk will now list the partition 
+
+To wipe the partition table:
+
+    dd if=/dev/zero of=/dev/sdb count=1 bs=512
+
+lsblk will now show the partition has gone
+
+## gdisk
+
+fdisk creates dos partition tables. gdisk creates guid partitions
+
+    gdisk /dev/sdb
+
+Command menu is much the same as fdisk
+
+Can’t clear the partition table in the same way as fdisk as the header is longer. guid has backup partition tables at the end of the disk.  
+
+To wipe the disk
+
+    dd if=/dev/zero of=/dev/sdb bs=16k
+
+## parted
+
+Works with both types of partitions and can be fully command line driven
+
+    parted /dev/sdb print
+
+Setup a partition 
+
+    parted
+
+    select /dev/sdb
+    mklabel gpt #or msdos
+
+    mkpart primary 1 200 #200mb
+
+    mkpart extended 201 -1 #extended to end of disk
+
+    mkpart logical 202 300
+
+    print # or just p
+
+    quit
+
+### Scripting partition creation
+    
+Exercise file: part.sh
+
+parted uses -s switch to run in command line mode. Needs “—“ if the last item has a minus prefix
+
+
+Backup the partition table:
+
+    dd if=/dev/sdb count=1 bs=512 of=/root/sdb.mbr
+
+## Creating file systems
+
+### Ext4
+
+    fdisk -l /dev/sdb
+
+    mkfs.ext4  -L data /dev/sdb6
+
+    # change the label
+    tune2fs -L MYDATA /dev/sdb6
+
+    # view the metadata
+    dumpe2fs /dev/sdb6
+
+To mount the fs temporarily
+
+    mount /dev/sdb6 /mnt
+
+    ls /mnt
+
+    umount /mnt
+
+More long term
+
+    mkdir  -p /data/{data1,data2}
+
+    mount /dev/sd6 /data/data1
+
+    umount /data/data1
+
+To persist, use /etc/fstab. Need to use drive identifier rather than device path
+
+    blkid /dev/sdb6
+
+    # copy uuid
+    # open fstab and add the line
+
+    UUID=“id” /data/data1 ext4 noexec 0 2 
+
+    # To mount
+    mount -a
+
+Run mount (no params). To get list.
+
+### xfs
+
+ NOw default fs in centos
+
+     mkfs.xfs -l size=10m /dev/sdb7
+    
+Check the fs
+
+    xfs_db -x /dev/sdb7
+
+This provides a shell
+
+    uuid
+    label
+    label data2
+    
+To mount
+
+    # open fstab and add the line
+
+    UUID=“id” /data/data2 xfs defaults 0 0
+
+Then mount -a
+
+     xfs_info /dev/sdb7
+
+### Mount options
+
+To try out options, edit fstab
+
+    mount -o remount
+
+## Swap devices
+
+Partition type 82
+
+    lsblk # find swaps
+    mkswap /dev/sdb5
+    swapon -s
+    swapon /dev/sdb5
+
+Swap priority sets access priority
+
+    swapoff /dev/sdb5
+    free -m
+
+Turn all off
+
+    swapoff -a
+
+To add to fstab
+
+    UUID=“uid” swap swap sw,pri=5 0 0
+
+Then
+
+    swapon -a
+
+Research logical mapper in fstab /dev/mapper
+
+## RAID devices
+
+Software RAID used to create fault tolerance and provide performance
+
+Levels
+
+* linear - spans storage over different sized disks
+
+* Raid 0 same as linear but same size disks
+
+* Raid 1 mirror over 2 disks
+
+* Raid 4-6 data is striped with parity over 3 or more disks
+
+Check raid support
+
+    cat /proc/mdstat
+
+Configure
+
+    mdadm —create —verbose /dev/md0 —level=mirror —Raid-devices=2 /dev/sdb13 /dev/sdb14
+
+    ls -l /dev/md0
+    lsmod | grep raid
+
+    mkfs.xfs /dev/md0
+
+    # configure for assembly at reboot
+    mdadm —detail —scan >> /etc/mdadm.conf
+
+To stop an array
+
+    mdadm —stop /dev/md0
+
+To start
+
+    mdadm —assemble —scan
+
+
+
+
+

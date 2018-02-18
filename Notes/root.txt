@@ -1,0 +1,15 @@
+# Root user
+
+## Prevent root console login
+
+Console access
+
+    touch /etc/seuretty
+
+This module is declared in /etc/pam.d/login
+
+For ssh, edit /etc/ssh/sshd.config
+
+     PermitRootLogin no
+
+Restart service.

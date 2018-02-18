@@ -1,17 +1,48 @@
 ---
+# A handy playbook for bringing up a generic CentOS VM for testing
+# Run: 
+#   ansible-playbook -v lab-vm-install.yml --extra-vars "vm_name=testvm" --ask-vault-pass
+
+- import_playbook: lab-provision.yml
+
 - hosts: localhost
   connection: local
   gather_facts: no
 
   vars_files:
+    - ~/.ansible-vaults/lab.yml
     - vars.yml
+  
+  vars:
+    vm_name: testvm
 
   tasks:
+    - name: Configure the VM's kickstart file
+      template:
+        src: "templates/centos-ks.cfg.j2"
+        dest: "http/kickstart/centos-ks.cfg"
+
+    - name: Configure the VM Base
+      command: |
+        scripts/config-vm-base.sh {{ vm_name }} lab
+
+    - name: Configure the VM specifics
+      command: |
+        scripts/config-generic-vm.sh {{ vm_name }}
+
+    - name: Attach a hard drive
+      command: |
+        scripts/attach-hdd.sh {{ vm_name }} "{{ vbox_disk_path }}"
+
+    - name: Attach the install ISO
+      command: |
+        scripts/attach-installdvd.sh {{ vm_name }} "{{ vm_iso_path }}"
+
     - name: Start the web server to be used by NAT-based VMs to PXE boot
       shell: |
         if [ "$(lsof -i -P -n | grep "TCP \*:8000 (LISTEN)"|cut -c 11-14)" == "" ]; then
             cd http 
-            python -m http.server > ../webserver.log &
+            python -u -m http.server &>../webserver.log &
         fi
 
     - name: Start the requested VM

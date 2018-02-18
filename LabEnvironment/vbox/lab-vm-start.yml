@@ -7,11 +7,12 @@
     - vars.yml
 
   tasks:
-    - name: Start all listed VMs if they exist
+    - name: Start the VM if it exists
       shell: |
-        vm_name={{ item.name }}
         vm_exists=$(VBoxManage list vms | grep "{{ vm_name }}" | cut -f 1 -d " "| tr -d '"')
-        if [ "$vm_exists" == "$vm_name" ]; then
-            VBoxManage startvm $vm_name
+        if [ "$vm_exists" == "{{ vm_name }}" ]; then
+            VBoxManage startvm {{ vm_name }}
+        else
+          echo VM not found: {{ vm_name }}
+          exit 1
         fi
-      with_items: "{{ vms }}"

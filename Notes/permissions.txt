@@ -1,0 +1,81 @@
+# Permissions with ACLs
+
+Allows acls for more than 1 user and/or 1 group
+
+
+## ACL support
+
+Check the config for the current kernel
+
+    ls /boot/config*
+    uname -r
+
+Or
+
+    grep ACL /boot/config-$(uname -r)
+
+Those marked with a “y” are loaded at boot, “m” indicates load on demand
+
+If ACL support is provided by the kernel, it isn’t needed in the filesystem
+
+To check ACL support in the filesystem:
+
+    sudo tune2fs -l /dev/sdb6 | grep -i default
+
+# Display ACLs
+
+When running
+
+    ls -l
+
+The . At the end of the perms indicates that ACLs are supported. A + indicates the ACLs are in place for the file/dir.
+
+To see the ACLs:
+
+    getfacl <file>
+
+To configure default ACLs for a dir:
+
+    mkdir test
+    setfacl -m d:o:—- test/
+    getfacl test
+    ls -ld test
+
+    setfacl -dm u:bob:rw test
+
+setfacl doesn’t change permissions for existing files (?)
+
+Handy model for giving access to multiple users and groups.
+
+Change the default mask
+
+    setfacl -m d:o:—- /test
+
+### Removing ACLs
+
+    setfacl -x u:bob file1 # remove an entry
+
+    getfacl file1
+
+    setfacl -b file1 # removes the ACL
+
+
+### Diagnosing problems
+
+    ls -l /etc/shadow # get perms
+
+    ls -Z /etc/shadow # selinux context
+
+    ausearch -m AVC -ts recent # check access errors
+
+To set selinux context: chcon
+
+Key commands:
+
+- chown
+- chgrp
+- chmod
+- setfacl
+
+
+

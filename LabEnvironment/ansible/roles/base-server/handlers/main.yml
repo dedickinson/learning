@@ -18,3 +18,8 @@
   service:
     name: firewalld
     state: restarted
+
+- name: reload firewalld
+  service:
+    name: firewalld
+    state: reloaded

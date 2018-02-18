@@ -24,6 +24,11 @@ other platforms.
 
 ## Before you start
 
+An Ansible Vault is used to hold the user login information used for installs etc. The `lab-provision-vault.yml` 
+playbook will prepare the vault for you but, should you need the details, run `ansible-vault view ~/.ansible-vaults/lab.yml`.
+
+    ansible-playbook lab-provision-vault.yml
+
 Preparing the Lab environment is done through an Ansible playbook:
 
     ansible-playbook -v lab-provision.yml --ask-vault-pass
@@ -45,7 +50,7 @@ VirtualBox provides the ability to [run PXE Boots on NAT interfaces](https://www
 
 Run the `lab-vm-start.yml` playbook to start an install:
 
-    ansible-playbook -v lab-vm-start.yml --extra-vars "vm_name=router"
+    ansible-playbook -v lab-vm-install.yml --extra-vars "vm_name=router" --ask-vault-pass
 
 In the PXE boot user interface, select the install option for the router. This will install and configure CentOS.
 
@@ -53,6 +58,7 @@ The host-only network card for the router VM is configured on `192.168.200.10` a
 
 Once the installation has completed, start it back up:
 
+    ansible-playbook -v lab-vm-start.yml --extra-vars "vm_name=router"
 
 Change over to the `ansible` directory and configure the VM:
 
@@ -65,7 +71,7 @@ ansible-playbook site.yml
 
 * The following gist really helped out on this: https://gist.github.com/jtyr/816e46c2c5d9345bd6c9
 * [VirtualBox - Global Configuration Data](https://www.virtualbox.org/manual/ch10.html#idp47569015460640) - check this out to determine where `VBOX_USER_HOME` is configured
-
+* [Anaconda Boot Options](http://anaconda-installer.readthedocs.io/en/latest/boot-options.html)
 
 ## Other VM stuff
 

@@ -1,0 +1,12 @@
+---
+- name: Install Squid
+  yum: name={{ item }} state=present
+  with_items:
+    - squid
+
+- name: Start and enable Squid
+  service:
+    name: squid
+    state: started
+    enabled: yes
+  

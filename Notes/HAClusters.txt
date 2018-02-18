@@ -1,0 +1,89 @@
+# HA Clusters
+
+## Install pacemaker
+
+The setup is for 2 servers
+
+On both servers:
+
+    yum install pacemaker pcs resource-agents
+
+    echo ‘hacluster:Password1’ | chpasswd
+
+    firewall-cmd —permanent —add-service=high-availability
+
+    firewall-cmd —reload
+
+    systemctl enable pcsd
+    systemctl start pcsd
+
+## Configure cluster
+
+On the main server:
+
+    pcs cluster auth server1.example.com server2.example.com -u hacluster -p Password1
+
+On both
+
+    pcs cluster setup —name peanut server1.example.com server2.example.com
+
+    pcs cluster start —all
+
+    pcs status
+
+    systemctl enable corosync pacemaker
+
+## STONITH and Quorum
+
+Shoot the other node in the head
+
+Disable STONITH:
+
+    pcs property set stonith-enabled=false
+
+Disable Quorum as we only have 2 servers
+
+    pcs property set no-quorum-policy=ignore
+
+    pcs status
+
+    pcs config
+
+Config is performed by pcs but view config At
+
+    less /etc/corosync/corosync.conf
+
+## Create a clustered IP address
+
+On server 1
+
+    pcs resource create cluster_ip ocf:heartbeat:IPaddr2 ip=192.168.56.5 cidr_netmask=24 op monitor interval=20s
+
+    pcs status
+
+    ip a s
+
+On server 2
+
+    pcs cluster standby server1.example.com
+
+    ip a s
+
+Bring server 1 back
+
+    pcs cluster standby server1.example.com
+
+## Install and configure apache
+
+For clustered services, disable httpd service as the cluster manager will look after it.
+
+On server 1
+
+    systemctl disable httpd
+    systemctl stop httpd
+
+    firewall-cmd —permanent —add-service=http
+
+    firewall-cmd —reload
+
+

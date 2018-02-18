@@ -12,12 +12,18 @@ VBoxManage modifyvm $vm_name --nattftpfile1 pxelinux.0
 VBoxManage modifyvm $vm_name --nic2 hostonly
 VBoxManage modifyvm $vm_name --hostonlyadapter2 vboxnet0
 
-# The Internal network is the one that host the Lab environment (labnetwork)
-VBoxManage modifyvm $vm_name --nic3 intnet 
-VBoxManage modifyvm $vm_name --intnet3 labnetwork-internal
+VBoxManage modifyvm $vm_name --nic3 bridged
+VBoxManage modifyvm $vm_name --bridgeadapter3  en4
 
+# The Internal network is the one that host the Lab environment (labnetwork)
 VBoxManage modifyvm $vm_name --nic4 intnet 
-VBoxManage modifyvm $vm_name --intnet4 labnetwork-dmz
+VBoxManage modifyvm $vm_name --intnet4 labnetwork-internal
+#VBoxManage modifyvm $vm_name --cableconnected3 off
 
 VBoxManage modifyvm $vm_name --nic5 intnet 
-VBoxManage modifyvm $vm_name --intnet5 labnetwork-external
+VBoxManage modifyvm $vm_name --intnet5 labnetwork-dmz
+#VBoxManage modifyvm $vm_name --cableconnected4 off
+
+VBoxManage modifyvm $vm_name --nic6 intnet 
+VBoxManage modifyvm $vm_name --intnet6 labnetwork-external
+#VBoxManage modifyvm $vm_name --cableconnected5 off

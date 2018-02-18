@@ -10,6 +10,13 @@
     enabled: yes
     state: started
 
+- name: Ensure that the SSH port is open
+  firewalld:
+    service: sshd
+    permanent: true
+    state: enabled
+  notify: reload firewalld
+
 - name: Copy over the SSHD configuration
   copy:
     src: "{{ role_path }}/files/etc/ssh/sshd_config"

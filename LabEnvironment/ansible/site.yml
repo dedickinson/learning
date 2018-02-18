@@ -1,4 +1,6 @@
 ---
+- import_playbook: site-update-security.yml
+
 - hosts: all
   roles:
     - base-server

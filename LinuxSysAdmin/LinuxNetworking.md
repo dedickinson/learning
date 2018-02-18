@@ -56,7 +56,7 @@ Just the IPv4 details:
 
 For a specific interface:
 
-    ip a s eth0
+    ip a s enp0s8
     ip a s lo
 
 To get the network device information:
@@ -68,6 +68,14 @@ To get the network device information:
 Query the network driver/hardware:
 
     ethtool eth0
+
+To list all networking devices:
+
+    ls /sys/class/net/
+
+You can then get information about a specific device:
+
+    udevadm info /sys/class/net/enp0s8
 
 ### tracepath
 
@@ -139,7 +147,49 @@ To configure a non-persistent address:
 
     ip addr add 172.17.67.3/16 dev enp0s8
 
-To set the networking configuration, edit the network script, such as `/etc/sysconfig/network-scripts/ifcfg-eth0`.
+To set the networking configuration:
+
+- edit the network script, such as `/etc/sysconfig/network-scripts/ifcfg-enp0s8`
+- If NetworkManager is installed, use `nmtui` or `nmcli`
+
+To restart the network:
+
+- `ifdown` and `ifup` the interface
+- `sudo systemctl restart network`
+
+### Sample static IPv4 address
+
+Found in the config file (e.g. `/etc/sysconfig/network-scripts/ifcfg-enp0s8`)
+
+````
+NAME=enp0s8
+DEVICE=enp0s8
+ONBOOT=yes
+NETBOOT=yes
+UUID=93b9fc8d-42d1-4a8f-a1b9-f71490868f08
+BOOTPROTO=static
+IPADDR=192.168.200.10
+NETMASK=255.255.255.0
+TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+PREFIX=24
+DEFROUTE=no
+IPV4_FAILURE_FATAL=yes
+IPV6INIT=no
+````
+
+### Sample DHCP-based configuration
+
+````
+NAME="enp0s9"
+DEVICE="enp0s9"
+ONBOOT=yes
+NETBOOT=yes
+UUID="780648e8-0621-41f6-b527-b8a6dc7a7dbb"
+BOOTPROTO=dhcp
+TYPE=Ethernet
+````
 
 ## Network manager
 

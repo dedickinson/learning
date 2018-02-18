@@ -1,0 +1,10 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name:
+      command: scripts/prepare-ansible-vault.sh ~/.ansible-vaults lab.yml
+      args:
+        creates: ~/.ansible-vaults/lab.yml
