@@ -22,11 +22,11 @@ LABEL local
 LABEL centos7-router
   MENU LABEL ^2. CentOS 7 Install for Router - VirtualBox
   KERNEL images/centos/7/vmlinuz
-  APPEND initrd=images/centos/7/initrd.img inst.ks=http://10.0.2.2:8000/kickstart/centos-ks-router.cfg ip=dhcp bootdev=eth0 ipv6.disable=1 inst.text
+  APPEND initrd=images/centos/7/initrd.img inst.ks=http://10.0.2.2:8000/kickstart/centos-ks-router.cfg ip=enp0s3:dhcp bootdev=enp0s3 ipv6.disable=1 inst.noninteractive inst.text
 
 LABEL centos7-basic
   MENU LABEL ^3. CentOS 7 Install - VirtualBox
   KERNEL images/centos/7/vmlinuz
-  APPEND initrd=images/centos/7/initrd.img inst.ks=http://10.0.2.2:8000/kickstart/centos-ks.cfg ip=dhcp bootdev=eth0 ipv6.disable=1 inst.text
+  APPEND initrd=images/centos/7/initrd.img inst.ks=http://10.0.2.2:8000/kickstart/centos-ks.cfg ip=enp0s3:dhcp bootdev=enp0s3 ipv6.disable=1 inst.noninteractive inst.text
 
 END

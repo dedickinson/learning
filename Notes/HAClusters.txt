@@ -77,7 +77,7 @@ Bring server 1 back
 
 For clustered services, disable httpd service as the cluster manager will look after it.
 
-On server 1
+On server 1 and server 2
 
     systemctl disable httpd
     systemctl stop httpd
@@ -85,5 +85,29 @@ On server 1
     firewall-cmd —permanent —add-service=http
 
     firewall-cmd —reload
+
+Create /etc/httpd/conf.d/status.conf
+
+    <Location /sever-status>
+    SetHandler server-status
+    Require ip 127.0.0.1
+    </Location>
+
+To check: apachectl configtest
+
+### Configure HA
+
+    pcs resource create web-server ocf:heartbeat:apache configfile=/etc/httpd/conf/httpd.conf statusurl=“http://127.0.0.1/server-status” op monitor interval=20s
+
+Constrain IP to collocate
+
+    pcs constraint collocation add web-server cluster_ip INFINITY
+
+ 
+
+
+
+
+
 
 

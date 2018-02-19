@@ -5,20 +5,20 @@ lang en_US.UTF-8
 keyboard us
 
 # This is the NAT network
-#network --device eth0 --onboot yes --bootproto dhcp
+network --device enp0s3 --onboot yes --bootproto dhcp
 
 # The Hostonly network
-#network --device eth1 --onboot yes --bootproto static --ip=192.168.200.10 --netmask=255.255.255.0 
+network --device enp0s8 --onboot yes --bootproto static --ip=192.168.200.10 --netmask=255.255.255.0 
 
 # The bridged network
-#network --device eth2 --onboot yes --bootproto dhcp
+network --device enp0s9 --onboot yes --bootproto dhcp
 
 # This is the Internal network
-#network --device eth3 --onboot yes --bootproto static --ip=172.16.1.1 --netmask=255.255.255.0
-#network --device eth4 --onboot yes --bootproto static --ip=172.16.100.1 --netmask=255.255.255.0
-#network --device eth5 --onboot yes --bootproto static --ip=172.16.200.1 --netmask=255.255.255.0
+network --device enp0s10 --onboot yes --bootproto static --ip=172.16.1.1 --netmask=255.255.255.0
+network --device enp0s16 --onboot yes --bootproto static --ip=172.16.100.1 --netmask=255.255.255.0
+network --device enp0s17 --onboot yes --bootproto static --ip=172.16.200.1 --netmask=255.255.255.0
 
-firewall --enabled --ssh --trust=eth1
+firewall --enabled --ssh --trust=enp0s8
 authconfig --enableshadow --passalgo=sha512
 selinux --permissive
 timezone --utc Australia/Brisbane

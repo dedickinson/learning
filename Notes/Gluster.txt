@@ -1,0 +1,78 @@
+# GlusterFS
+
+Aggregated storage - allows replicated, striped or distributed filesystems
+
+## Add disks
+
+Add hard drive in VBox 
+
+    lsblk # in the example, the new disk is sdd
+    parted /dev/sdd — mklabel msdos mkpart primary 1m -1m
+    mkfs.xfs /dev/sdd1
+
+    mkdir /gfs
+
+In fstab, use the vi command to paste in command output
+
+    :r!blkid /dev/sdd1
+
+Keep the UUID and have line as
+
+    UUID=“<uuid>” /gfs xfs defaults 0 0
+
+Then mount
+
+    mount -a
+    mount
+
+Repeat this on the second server
+
+## Install Gluster
+
+On both servers:
+
+    yum install centos-release-gluster310.noarch
+
+    yum install glusterfs-server
+
+    firewall-cmd —permanent —add-service=glusterfs
+    firewall-cmd reload
+
+To implement the volumes, on both servers:
+
+    mkdir /gfs/vol_dist
+
+    gluster peer probe server2.example.com #only run on 1 node
+
+    gluster peer status
+
+    gluster volume create volume_distributed transport tcp server1.example.com:/gfs/vol_dist server2.example.com:/gfs/vol_dist
+
+    gluster volume start volume_distributed
+
+    gluster info
+
+    mount -t glusterfs server1.example.com:/volume_distributed /mnt
+
+   touch /mnt/file{1..100}
+
+The files are distributed across the volumes.
+
+## Replicating volumes
+
+On both:
+
+    umount /t
+
+    mkdir /gfs/rep
+
+The pool is already created so don’t need to do that here
+
+    gluster volume create volume_replicated replica 2 server1.example.com:/gfs/rep server2.example.com:/gfs/rep
+
+    gluster volume start volume_replicated
+
+    gluster volume info
+
+    mount -t glusterfs server1.example.com:/volume_replicated /mnt
+

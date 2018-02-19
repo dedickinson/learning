@@ -48,6 +48,18 @@ has some specific requirements as no other lab components exist before it starts
 
 VirtualBox provides the ability to [run PXE Boots on NAT interfaces](https://www.virtualbox.org/manual/ch06.html#nat-tftp) and this is used to install the Router VM.
 
+I've elected to use the [Predictable Interface Names](https://www.freedesktop.org/wiki/Software/systemd/PredictableNetworkInterfaceNames/) approach - mainly to help my learning. On the router VM, the devices are:
+
+VBox Name | Type               | IP/CIDR           | Device 
+----------|--------------------|-------------------| --------
+nic1      | nat                | dhcp              | enp0s3 
+nic2      | hostonly           | 192.168.200.10/24 | enp0s8
+nic3      | bridged            | dhcp              | enp0s9
+nic4      | intnet - internal  | 192.168.1.1/24    | enp0s10
+nic5      | intnet - dmz       | 192.168.100.1/24  | enp0s16
+nic6      | intnet - external  | 192.168.200.1/24  | enp0s17
+
+
 Run the `lab-vm-start.yml` playbook to start an install:
 
     ansible-playbook -v lab-vm-install.yml --extra-vars "vm_name=router" --ask-vault-pass
@@ -72,6 +84,7 @@ ansible-playbook site.yml
 * The following gist really helped out on this: https://gist.github.com/jtyr/816e46c2c5d9345bd6c9
 * [VirtualBox - Global Configuration Data](https://www.virtualbox.org/manual/ch10.html#idp47569015460640) - check this out to determine where `VBOX_USER_HOME` is configured
 * [Anaconda Boot Options](http://anaconda-installer.readthedocs.io/en/latest/boot-options.html)
+* [CentOS Community kickstarts](https://github.com/CentOS/Community-Kickstarts)
 
 ## Other VM stuff
 

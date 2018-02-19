@@ -1,0 +1,66 @@
+# Encrypted volumes
+
+LUKS - Linux Unified Key Setup
+
+## Adding logical volume and shred
+
+    vgs #check free space
+
+    lvcreate -L 60m -n enc vg1
+
+    shred -v —iterations=1 /dev/vg1/enc
+
+## Check LUKS support and encrypt
+
+    grep -i DM_CRYPT /boot/config-$(uname -r)
+
+    lsmod | grep dm_crypt
+
+If marked with an “m”, the module loads on demand
+
+    cryptsetup -y luksFormat /dev/vg1/enc
+
+    cryptsetup luksDump /dev/vg1/enc
+
+    cryptsetup isLuks /dev/vg1/enc
+    echo $?
+
+## opening and formatting
+
+    cryptsetup luksOpen /dev/vg1/enc enc_vol
+
+    ls /dev/mapper #see enc_vol
+
+    mkfs.xfs /dev/mapper/enc_vol
+
+## Mount at boot
+
+To close the volume:
+
+    cryptsetup luksClose enc_vol
+
+    blkid # look for crypto_LUKS for uuid
+
+Add to /etc/crypttab
+
+    luks-data UUID=“<uuid>”
+
+Add to /etc/fstab
+
+    /dev/mapper/luks-data /luks-data xfs defaults 0 0
+
+Then:
+
+    mkdir /luks-data
+    cryptsetup luksOpen /dev/vg1/enc luks-data
+    mount -a
+    
+On reboot you get a request to provide a passphrase.
+
+
+
+    
+
+
+
+
