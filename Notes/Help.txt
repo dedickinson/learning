@@ -1,0 +1,26 @@
+# Help
+
+    lsb-release -h
+
+## man pages
+
+    man ls
+
+- / to search forward, ? To search backwards
+- n goes to next result, N goes to previous
+
+    man man
+
+Describes the various sections.
+
+    man crontab # the command
+    man 5 crontab # the file format
+
+## info pages
+
+    info ls
+
+Follow a link by pressing enter, b to go back, u to go up a level
+
+
+

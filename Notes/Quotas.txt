@@ -1,0 +1,56 @@
+# Quotas
+
+## Ext4
+
+    df -hT #also lists fs types
+
+    rpm -qf $(which quota)
+
+Edit /etc/fstab and add “usrquota” or grpquota as an option for the ext4 Mount. Then umount and Mount -a
+
+    quotacheck -mau
+
+    quotaon /dev/sdb6
+
+
+    repquota -uv /dev/sdb6
+
+First number is soft limit (in Kb) second is hard:
+
+    setquota -u tux 20000 25000 0 0 /dev/sdb6
+
+Alternatively:
+
+    edquota -u bob
+
+Copy quota config from bob to sally:
+
+    edquota -u sally -p bob
+
+To create a test file
+
+    dd if=/dev/zero of=/data/mydata/blob count=1 bs=20M
+
+Check status
+
+    sudo repquota -u /dev/sdb6
+
+## xfs
+
+Example uses /dev/sdb7 as xfs on /data/data2
+
+Fstab options: uquota, gquota, pquota, uqnoenforce
+
+Quota tool: xfs_quota
+
+Cmdline version xfs_quota -c ‘quota tux’
+
+    xfs_quota -xc ‘limit -u bsoft=30m bhard=35m tux’ /data/data2
+
+    xfs_quota -c ‘quota -h tux’
+
+    xfs_quota -xc ‘report -h’ /data/data2/
+
+
+
+

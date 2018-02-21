@@ -1,0 +1,56 @@
+# Screen and script
+
+## Script
+
+Start recording:
+
+    script 
+
+Stop recording
+
+    exit
+
+Then cat typescript. The session recording is displayed.
+
+Sharing: 
+
+    mkfifo /tmp/myfifo
+
+    script -f /tmp/mypipe
+
+As another user:
+
+    cat /tmp/mypipe
+
+This allows user 2 to follow the second users actions.
+
+## Screen
+
+Runs commands on multiple servers
+
+    yum install screen
+
+Only needed on the master system.
+
+    screen # opens new shell
+
+To prepare
+
+    ssh-agent bash
+    ssh-add
+
+Create a .screenrc file with
+
+    screen -t master 0 bash
+    screen -t s1 1 ssh server1
+    screen -t s2 2 ssh server2
+
+Then run screen for a session on all machines.
+
+Next screen: Ctrl+a n
+previous screen: Ctrl+a p
+List screens: Ctrl+a “
+
+To run a command Ctrl+a : 
+
+    :at “#” stuff “yum install -y zsh ^M”

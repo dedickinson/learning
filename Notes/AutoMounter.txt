@@ -1,6 +1,97 @@
 # Auto-mounter
 
+AutoFS - can mount local, encrypted and network filesystems
 
+To install
 
+    yum list available | autofs
 
+    yum install autofs
 
+    systemctl start autofs
+
+Config /etc/auto.*
+
+    less /etc/autofs.conf
+
+    less /etc/auto.master
+
+The /misc directory holds the mapped filesystems
+
+To access an auto mounted CD:
+
+    cd /misc/cd
+
+Note that the misc dir is created when autofs start. The cd subdir is created on demand
+
+## Auto Mount an encrypted partition
+
+Uncounted the luks partition
+
+    umount /luks/data
+
+... and remove from fstab
+
+    cryptsetup luksClose luks-data
+
+Remember name is set in crypttab
+
+Edit /etc/auto.misc and add
+
+    luks -fstype=xfs :/dev/mapper/luks-data
+
+Note that the : denotes a local device
+
+Then
+
+    systemctl restart autofs
+
+This the prompt for the passphrase
+
+    cd /misc/luks
+
+## Auto Mount remote file server
+
+Configure NFS on another server
+
+    yum install nfs-utils
+
+    firewall-cmd —add-service=nfs —permanent
+
+    firewall-cmd —reload
+
+    systemctl enable nfs-server rpcbind
+    systemctl start nfs-server rpcbind
+
+    mkdir /share
+
+    vi /etc/exports
+
+Add into config
+
+    /share *(ro)
+
+Then
+
+    exportfs -r
+    exportfs -s
+
+Back on the main server
+
+    mount -t nfs server2.example.com:/share /mnt
+
+    ls /mnt
+    mount # just to review
+    umount /mnt
+
+Open /etc/auto.misc and add
+
+    share -ro,soft,intr server2.example.com:/share
+
+Then
+
+    systemctl restart autofs
+
+    cd /misc/share
+
+    ls /misc/share

@@ -1,0 +1,28 @@
+# SSH
+
+Create ~/.ssh/config
+
+    Host server1
+        HostName <ip or name>
+        User <user>
+        Port <#>
+
+First line is the alias name.
+
+     ssh server1
+
+## Public key auth
+
+    ssh-keygen -t rsa
+
+     ssh-copy-id -i id_rsa.pub server1
+
+    ssh server1
+
+To act using a key:
+
+    ssh-agent bash
+    ssh-add
+    ssh server1
+
+
