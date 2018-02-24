@@ -1,0 +1,73 @@
+---
+- name: Configure firewall zones
+  shell: |
+    firewall-cmd --permanent --new-zone=lab-public
+    firewall-cmd --permanent --new-zone=lab-nat
+    firewall-cmd --permanent --new-zone=lab-internal
+    firewall-cmd --permanent --new-zone=lab-hostonlyif
+    firewall-cmd --reload
+
+- name: NAT NIC
+  firewalld:
+    interface: enp0s3
+    permanent: yes
+    immediate: yes
+    zone: lab-nat
+    state: enabled
+  notify: reload firewalld
+
+- name: Host-only NIC
+  firewalld:
+    interface: enp0s8
+    permanent: yes
+    immediate: yes
+    zone: lab-hostonlyif
+    state: enabled
+  notify: reload firewalld
+
+- name: Bridged NIC
+  firewalld:
+    interface: enp0s9
+    permanent: yes
+    immediate: yes
+    zone: lab-public
+    state: enabled
+  notify: reload firewalld
+
+- name: Internal network - internal
+  firewalld:
+    interface: enp0s10
+    permanent: yes
+    immediate: yes
+    zone: lab-internal
+    state: enabled
+  notify: reload firewalld
+
+- name: Internal network - dmz
+  firewalld:
+    interface: enp0s16
+    permanent: yes
+    immediate: yes
+    zone: lab-internal
+    state: enabled
+  notify: reload firewalld
+
+- name: Internal network - external
+  firewalld:
+    interface: enp0s17
+    permanent: yes
+    immediate: yes
+    zone: lab-internal
+    state: enabled
+  notify: reload firewalld
+
+- name: Allow SSH Inbound only for the lab-hostonlyif zone
+  firewalld:
+    service: ssh
+    permanent: yes
+    immediate: yes
+    zone: lab-hostonlyif
+    state: enabled
+  notify: reload firewalld
+
+

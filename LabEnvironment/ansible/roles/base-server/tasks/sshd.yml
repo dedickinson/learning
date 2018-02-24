@@ -12,7 +12,7 @@
 
 - name: Ensure that the SSH port is open
   firewalld:
-    service: sshd
+    service: ssh
     permanent: true
     state: enabled
   notify: reload firewalld

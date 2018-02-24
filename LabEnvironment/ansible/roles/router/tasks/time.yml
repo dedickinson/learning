@@ -1,0 +1,15 @@
+---
+- name: Allow NTP Inbound only for the lab-internal zone
+  firewalld:
+    service: ntp
+    permanent: yes
+    immediate: yes
+    zone: lab-internal
+    state: enabled
+  notify: reload firewalld
+
+- name: Let chrony server others
+  lineinfile:
+    path: /etc/chrony.conf
+    line: 'allow 172.16.0.0/16'
+  notify: restart chronyd

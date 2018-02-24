@@ -1,0 +1,15 @@
+# Apache
+
+
+
+## Enable SSL
+
+    yum install mod_ssl
+
+Generate a key:
+
+    openssl req -new -nodes -x509 =keyout my.key -out my.crt
+    # set common name as host name
+
+    chmod 400 my.key my.crt
+

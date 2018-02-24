@@ -10,7 +10,7 @@
     - name: Start all listed VMs if they exist
       shell: |
         vm_name={{ item.name }}
-        vm_exists=$(VBoxManage list vms | grep "{{ vm_name }}" | cut -f 1 -d " "| tr -d '"')
+        vm_exists=$(VBoxManage list vms | grep "$vm_name" | cut -f 1 -d " "| tr -d '"')
         if [ "$vm_exists" == "$vm_name" ]; then
             VBoxManage startvm $vm_name
         fi

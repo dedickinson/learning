@@ -9,4 +9,21 @@
     name: squid
     state: started
     enabled: yes
-  
+
+- name: Configure squid
+  copy:
+    src: files/etc/squid/squid.conf
+    dest: /etc/squid/squid.conf
+    owner: root
+    group: squid
+    mode: 0640
+  notify: "restart squid"
+
+- name: Configure the Firewall for Squid
+  firewalld:
+    service: squid
+    permanent: yes
+    immediate: yes
+    zone: lab-internal
+    state: enabled
+  notify: reload firewalld

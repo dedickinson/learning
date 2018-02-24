@@ -1,0 +1,8 @@
+---
+- name: restart dns
+  service:
+    name: named
+    state: restarted
+
+- name: reload firewalld
+  command: firewall-cmd --reload

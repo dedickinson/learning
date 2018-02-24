@@ -75,8 +75,8 @@ Once the installation has completed, start it back up:
 Change over to the `ansible` directory and configure the VM:
 
 ````bash
-ansible-playbook site-update.yml
-ansible-playbook site.yml
+ansible-playbook -v site-update.yml
+ansible-playbook -v site.yml
 ````
 
 ### References

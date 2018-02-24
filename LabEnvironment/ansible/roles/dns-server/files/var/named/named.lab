@@ -1,0 +1,13 @@
+$TTL 3H
+$ORIGIN lab.example.com.
+
+lab.example.com. IN SOA router.lab.example.com. root.lab.example.com. (
+    1 ; serial - increment this on changes
+    1D ; refresh
+    1H ; retry
+    1W ; expire
+    3H) ; minimum
+
+lab.example.com. NS router.lab.example.com.
+router A  172.16.1.1
+time  CNAME  router

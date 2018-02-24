@@ -1,0 +1,29 @@
+---
+- name: Install DHCP Server
+  yum: name={{ item }} state=present
+  with_items:
+    - dhcp
+
+- name: Configure DHCP server
+  copy:
+    src: files/etc/dhcp/dhcpd.conf
+    dest: /etc/dhcp/dhcpd.conf
+    owner: root
+    group: squid
+    mode: 0640
+  notify: "restart dhcp"
+
+- name: Allow DHCP Inbound only for the trusted zone
+  firewalld:
+    service: dhcp
+    permanent: yes
+    immediate: yes
+    zone: lab-internal
+    state: enabled
+  notify: reload firewalld
+
+- name: Start and enable the dhcp service
+  service:
+    name: dhcpd
+    state: started
+    enabled: yes

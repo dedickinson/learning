@@ -5,9 +5,5 @@
   roles:
     - base-server
 
-- hosts: router
-  tasks:
-    - hostname:
-        name: router.lab.example.com
-    - import_role:
-        name: router
+- import_playbook: router.yml
+

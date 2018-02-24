@@ -43,6 +43,31 @@ When making changes, include the `permanent` switch to survive reboot:
 * /etc/firewalld/services/
 * firewall-cmd —permanent —add-Service=puppet —zone=
 
+### Firewall configuration example
+
+    firewall-cmd --set-default-zone=public
+
+    # Enable the zones we want and disable the others
+    firewall-cmd --get-zones
+    firewall-cmd --get-active-zones
+
+    # This is the NAT Nic
+
+
+    # This is the host-only NIC
+    firewall-cmd --zone=trusted --add-interface=enp0s8 --permanent
+    
+    # This is a bridged NIC
+    firewall-cmd --zone=public --add-interface=enp0s9 --permanent
+
+    # This is the lab network
+    firewall-cmd --zone=public --remove-interface=enp0s10 --permanent
+    firewall-cmd --zone=internal --add-interface=enp0s10 --permanent
+    firewall-cmd --zone=internal --add-interface=enp0s16 --permanent
+    firewall-cmd --zone=internal --add-interface=enp0s17 --permanent
+
+
+
 ## iptables
 
 * iptables -l

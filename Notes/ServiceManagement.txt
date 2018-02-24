@@ -1,0 +1,21 @@
+# Service management
+
+Handy packages:
+
+    yum install net-tools bash-completion vim-enhanced
+
+No longer using init daemon. Check by looking at process 1:
+
+    ps -fp 1
+
+Now using systemd.
+
+## Using systemctl
+
+To disable a service and prevent it from being started.
+
+    systemctl mask <service>
+
+
+
+

@@ -92,6 +92,8 @@ Network status can be provided by `netstat`
     netstat --interfaces # handy for seeing TX/RX for each interface
     netstat --statistics
 
+    netstat -tulpn # find out which process is behind the port
+
 Check out an interface
 
 ### nmap

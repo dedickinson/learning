@@ -1,0 +1,16 @@
+# Squid proxy
+
+    yum install squid
+
+Edit /etc/squid.conf.
+
+- set local network
+
+Then 
+
+    systemctl enable squid
+    systemctl start squid
+
+On clients
+
+    export http_proxy=http://<proxy host>:3128

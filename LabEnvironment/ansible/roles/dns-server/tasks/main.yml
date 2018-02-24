@@ -1,0 +1,39 @@
+---
+- name: Install DHCP Server
+  yum: name={{ item }} state=present
+  with_items:
+    - bind 
+    - bind-utils
+
+- name: Allow DNS Inbound only for the trusted zone
+  firewalld:
+    service: dns
+    permanent: yes
+    immediate: yes
+    zone: lab-internal
+    state: enabled
+  notify: reload firewalld
+
+- name: Copy the DNS Config files over
+  copy:
+    src: files/etc/named.conf
+    dest: /etc/named.conf
+    owner: root
+    group: named
+    mode: 0640
+  notify: restart dns
+
+- name: Copy the DNS record file over
+  copy:
+    src: files/var/named/named.lab
+    dest: /var/named/named.lab
+    owner: root
+    group: named
+    mode: 0640
+  notify: restart dns
+
+- name: Start and enable the DNS service
+  service:
+    name: named
+    state: started
+    enabled: yes

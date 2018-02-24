@@ -1,0 +1,18 @@
+---
+- name: NIC setup
+  net_interface: 
+    aggregate:
+      - name: enp0s3
+        description: NAT
+      - name: enp0s8
+        description: Host only
+      - name: enp0s9
+        description: Bridged NIC
+      - name: enp0s10
+        description: Internal network - internal
+      - name: enp0s16
+        description: Internal network - dmz
+      - name: enp0s17
+        description: Internal network - external
+    enabled: yes
+    state: up
