@@ -142,3 +142,86 @@ SELinux Booleans
     semanage port -l
 
     semanage port -a -t ssh_port_t -p tcp 2222
+    
+## Working with services
+
+### Install and configure SAMBA
+
+Install and configure SAMBA for CIFS file sharing.
+
+    yum list samba*
+    
+    yum install samba*
+    
+Then
+
+    mkdir -m 1777 /share
+    
+    ls -ld /share
+    
+    touch /share/test.txt
+    
+Setup the share in ‘/etc/samba/smb.conf’. Set the following share config
+
+    [share]
+    path=/share
+    writable=yes
+    
+Test using ‘testparm’.
+
+    systemctl start nmb smb
+    systemctl enable nmb smb
+    
+    smbpasswd -a root
+    smbclient -L //localhost
+    
+    smbclient //localhost/share
+    
+    ls
+    
+The last command fails, so diagnose:
+
+    getenforce #check selinux state
+    
+    ausearch -m avc #find smb issue
+    
+Look at the ‘scontext’ vs the ‘tcontext’ - they don’t match. The doco in ‘/etc/samba/smb.conf’ will guide a fix. But there’s other approaches
+
+    ls -dZ /share/
+    
+    yum whatprovides */sbin/semanage
+    
+    yum install policycoreutils-python
+    
+    semanage fcontext -a -t samba_share_t '/share(/.*)?'
+    
+    restorecon -R /share
+
+## Another config approach
+
+    mkdir -m 1777 /accounts
+    
+Edit samba config and add
+
+    [accounts]
+    path=/accounts
+    writable=yes
+    
+Then configure selinux for samba using a global approach:
+
+    setsebool -P samba_export_all_rw 1
+    systemctl restart smb
+    
+    smbclient -L //localhost
+    smbclient //localhost/accounts
+
+## Configure a Service to be permissive
+
+    yum install setools
+    seinfo —permissive
+    
+    semanage permissive -a smbd_t
+    
+    
+
+

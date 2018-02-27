@@ -1,0 +1,8 @@
+---
+- name: restart vsftpd
+  service:
+    name: vsftpd
+    state: restarted
+
+- name: reload firewalld
+  command: firewall-cmd --reload

@@ -1,0 +1,60 @@
+# FTP
+
+## Side note: Setup DNS client
+
+In the ifcfg script for the network interface, change the PEERSNS entry and add DNS1 entries for manual config.
+
+## Install vsftpd
+
+    yum install vsftpd
+
+    systemctl start vsftpd
+    systemctl enable vsftpd
+
+    netstat -ltn
+
+Try to connect from a browser
+
+Edit config in /etc/vsftpd/
+
+Edit vsftpd.conf, make sure the following lines are set:
+
+    anonymous_enable=YES
+    local_enable=NO
+    write_enable=NO
+    listen=YES
+    listen_ipv6=NO
+    anon_world_readable_only=YES
+
+## Create a YUM repo
+
+Mount the install DVD to /mnt
+
+    mkdir /var/ftp/pub/centos72
+
+    cd /mnt
+    find . | cpio -pmd /var/ftp/pub/centos72
+
+To use the repo, go to /etc/yum.repos.d and remove the files. Add a new file local.repo:
+
+    [ftpc7]
+    name=Local network Centos 7.2 repo
+    baseurl=ftp://ftp.lab.example.com/pub/centos72
+    enabled=1
+    gpgcheck=no
+
+Then
+
+    yum clean all
+
+Check with 
+
+    yum repolist
+
+
+
+
+
+
+
+

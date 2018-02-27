@@ -9,3 +9,5 @@
         name: dhcp-server
     - import_role:
         name: dns-server
+    - import_role:
+        name: ftp-server

@@ -1,0 +1,76 @@
+# Virtualisation 
+
+## KVM
+
+Run lscpu to check on hardware
+
+    lscpu
+
+    cat /proc/cpuinfo
+
+Look for “vmx” or “svm”. Also need to look at the BIOS for your motherboard.
+
+Check that time is accurate
+
+    ntpq -p
+
+    cat /etc/ntp.conf
+
+    
+
+## XRDP
+
+XRDP is the Remote Desktop protocol for X. Runs on port 3389.
+
+The actual connection is via an internal VNC service on 5901.
+
+Install from epel:
+
+    yum install xrdp
+
+Side note - roll back an install:
+    yum history info
+    yum history undo <n>
+
+### Configure
+
+Config is in /etc/xrdp
+
+Enable with selinux:
+
+    getenforce # make sure is enforcing
+
+    cd /usr/sbin
+
+    ls -Z xrdp*
+
+    chcon -t bin_t xrdp xrdp-sesman
+
+    systemctl start xrdp
+    systemctl enable xrdp
+
+    netstat -ltn # look for 3389
+
+Then configure:
+
+    cd /etc/xrdp
+    vi startwm.sh
+
+After the locale if block
+
+    echo 'mate-session' > ~/.xsession
+    chmod +x ~/?xsession
+
+### Set keymap files
+
+In the remote session:
+
+    cd /etc/xrdp
+
+    setxkbmap -layout gp
+    xrdp-genkeymap km-0809.ini #UK
+
+Then disconnect from RDP session and reconnect.
+
+
+

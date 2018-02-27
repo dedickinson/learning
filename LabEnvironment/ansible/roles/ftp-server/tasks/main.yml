@@ -1,0 +1,29 @@
+---
+- name: Install VS FTP Server
+  yum: name={{ item }} state=present
+  with_items:
+    - vsftpd
+
+- name: Allow FTP access only for the trusted zone
+  firewalld:
+    service: ftp
+    permanent: yes
+    immediate: yes
+    zone: lab-internal
+    state: enabled
+  notify: reload firewalld
+
+- name: Copy the FTP Config files over
+  copy:
+    src: files/etc/vsftpd/vsftpd.conf
+    dest: /etc/vsftpd/vsftpd.conf
+    owner: root
+    group: root
+    mode: 0600
+  notify: restart vsftpd
+
+- name: Start and enable the FTP service
+  service:
+    name: named
+    state: started
+    enabled: yes

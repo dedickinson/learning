@@ -1,0 +1,7 @@
+# Logging
+
+jounald and rsyslogd
+
+
+
+Use journald for troubleshooting
