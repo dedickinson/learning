@@ -1,0 +1,14 @@
+# System Storage Manager
+
+- [RHEL 7 Storage Admin Guide](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/storage_administration_guide/ch-ssm)
+
+## Install
+
+    yum install system-storage-manager lvm2
+
+## The basics
+
+To list devices:
+
+    ssm list
+    
