@@ -12,3 +12,6 @@ To list devices:
 
     ssm list
     
+# Create a New Pool, Logical Volume, and File System:
+
+    ssm create --fstype xfs --size 1G --name lv1 --pool  /dev/sdb /dev/vdc
