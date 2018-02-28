@@ -72,5 +72,157 @@ In the remote session:
 
 Then disconnect from RDP session and reconnect.
 
+## VM Networking
+
+Libvirt is used to manage virtual networks for KVM.
+
+virbr0 is installed by libvirt as the bridge for virtualised systems.
+
+### Install libvirt
+
+    yum install libvirt
+
+    ip a # No virtual networking yet
+
+    cd /etc/libvirt/qemu/networks/
+    cat default.xml
+
+    systemctl start libvirtd
+    systemctl enable libvirtd
+
+    ip a # now virbr0 displays
+
+    brctl show
+
+    ls /etc/sysconfig/network-scripts # no listing for virtual networks
+
+### Using virsh
+
+    virsh list
+
+    virsh net-list
+
+    cd /etc/libvirt/qemu/networks/
+    cat default.xml
+
+    ls autostart # list the auto starting components
+
+    virsh # open an interactive session
+
+Using virsh
+
+    net-destroy default #really just stops
+
+    net-list
+
+    net-list —inactive
+
+    # stop default from starting
+    # removes link from autostart
+    net-autostart —disable default
+
+To completely remove the network
+
+    virsh net-destroy default
+    cp default.xml ~/
+
+    virsh net-undefine default
+
+To create a network
+
+    cd /etc/libvirt/qemu/networks/
+    cp ~/default.xml .
+
+    virsh net-define default.xml
+    virsh net-list —inactive
+
+    virsh net-start default
+    virsh net-autostart default
+    
+    virsh net-edit default
+
+An editor is now opened for editing the network. Make changes, such as network address and range. Save and then:
+
+    virsh net-destroy default
+    virsh net-start default
+
+    ip a s virbr0
+
+Create a host-only if. Copy default to hostonly.xml. Remove the UUID, and the forward mode. Create a new bridge by setting name to virbr1. Change the MAC. Change the IP address and the address range.
+
+    virsh net-define hostonly.xml
+    virsh net-start hostonly
+    virsh net-autostart hostonly
+    virsh net-list
+
+The ‘brctl’ tool is an older method for managing network bridges.
+
+## Installing KVM
+
+Kernel-based virtual machine. Two kernel modules: kvm.ko and either kvm-intel.ko or kvm-amd.ko
+
+    yum install qemu-kvm virt-install
+
+To install GUI manager, add 'virt-manager'
+
+Then check the kernel module
+
+    lsmod | grep kvm
+
+## Connect with virsh
+
+Connect locally using 
+
+    virsh
+    # or, equivalently
+    virsh -c qemu:///system
+
+To connect from a remote host, install libvirt on that system and
+
+    virsh -c qemu+ssh://root@<ip>/system
+
+Swap root with a user who has enough perms.
+
+Use virt-manager as a control UI.
+
+## Create a guest VM
+
+Used virt-manager GUI to start the VM
+
+### PXE boots
+
+On the host, install vsftp and place iso and kickstart there.
+
+Setup the tftp folder but you don’t need the service
+
+Then
+
+    virsh net-edit default
+
+Within the ip element, add in
+
+    <tftp root='/tftpboot'/>
+
+In the dhcp element, add in
+
+    <bootp file='pxelinux.0'/>
+
+Restart the default network
+
+Check selinux permissions if can’t access tftpboot:
+
+    grep dnsmasq /var/log/audit/audit.log | audit2allow -M mypol
+
+    semodule -i mypol.pp
+
+### CLI VM creation
+
+    virsh list
+    virsh list —all
+
+    yum install virt-install virt-viewer
+
+    virt-install —name testvm —hvm —network=bridge:virbr0 —pxe —graphics spice —ram=728 —vcpus=1 —os-type=Linux —os-variant=rhel7 —disk path=/var/lib/libvirt/images/c7-auto.qcow2,size=9
+
 
 
