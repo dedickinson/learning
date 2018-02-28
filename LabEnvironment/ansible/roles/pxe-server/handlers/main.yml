@@ -1,0 +1,8 @@
+---
+- name: restart tftpd
+  service:
+    name: tftpd
+    state: restarted
+
+- name: reload firewalld
+  command: firewall-cmd --reload

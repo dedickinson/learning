@@ -11,3 +11,5 @@
         name: dns-server
     - import_role:
         name: ftp-server
+    - import_role:
+        name: pxe-server

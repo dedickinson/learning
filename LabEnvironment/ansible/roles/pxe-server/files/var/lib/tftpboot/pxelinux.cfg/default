@@ -1,0 +1,27 @@
+PROMPT 0
+NOESCAPE 0
+ALLOWOPTIONS 0
+TIMEOUT 100
+
+### TUI
+DEFAULT menu.c32
+
+### GUI
+#UI vesamenu.c32
+# The splash.png file is a PNG image with resolution of 640x480 px
+#MENU BACKGROUND splash.png
+
+MENU TITLE ---===[ Boot Menu ]===---
+
+LABEL local
+  MENU DEFAULT
+  MENU LABEL ^1. Boot from hard drive
+  COM32 chain.c32
+  APPEND hd0
+
+LABEL centos7-basic
+  MENU LABEL ^2. CentOS 7 Install
+  KERNEL images/centos/7/vmlinuz
+  APPEND initrd=images/centos/7/initrd.img inst.ks=http://10.0.2.2:8000/kickstart/centos-ks.cfg ip=enp0s3:dhcp bootdev=enp0s3 ipv6.disable=1 inst.noninteractive inst.text
+
+END

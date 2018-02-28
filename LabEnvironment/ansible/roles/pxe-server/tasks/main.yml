@@ -1,0 +1,43 @@
+---
+- name: Install TFTP Server
+  yum: name={{ item }} state=present
+  with_items:
+    - syslinux
+    - tftp
+    - tftp-server
+
+- name: Allow TFTP access only for the trusted zone
+  firewalld:
+    service: tftp
+    permanent: yes
+    immediate: yes
+    zone: lab-internal
+    state: enabled
+  notify: reload firewalld
+
+- name: Configure the pxelinux.cfg dir
+  file:
+    path: /var/lib/tftpboot/pxelinux.cfg
+    state: directory
+
+- name: Configure the pxelinux default file
+  copy:
+    dest: /var/lib/tftpboot/pxelinux.cfg/default
+    src: files/var/lib/tftpboot/pxelinux.cfg/default
+
+- name: Configure the pxelinux default file
+  copy:
+    remote_src: yes
+    dest: /var/lib/tftpboot/
+    src: "{{ item }}"
+  with_items:
+    - /usr/share/syslinux/pxelinux.0
+    - /usr/share/syslinux/menu.c32
+    - /var/ftp/pub/distro/centos/7/images/pxeboot/vmlinuz
+    - /var/ftp/pub/distro/centos/7/images/pxeboot/initrd.img
+
+- name: Start and enable the TFTP Socket
+  service:
+    name: tftp.socket
+    state: started
+    enabled: yes
