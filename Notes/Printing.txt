@@ -1,0 +1,63 @@
+# Printing
+
+## Install
+    yum install cups
+
+    systemctl start cups
+
+    systemctl enable cups
+
+    netstat -tln #port 631
+
+## Configure
+
+Cups installs a web ui
+
+Edit /etc/cups/cupsd.conf
+
+    DefaultEncryption never
+    Listen 192.168.1.1:631
+
+    <Location />
+    Order allow,deny
+    allow 192.168.0.0/24
+    allow localhost
+    <Location>
+
+    <Location /admin>
+    Order allow,deny
+    allow 192.168.0.0/24
+    allow localhost
+    <Location>
+
+Then restart cups
+
+Then browse to to the CUPS page on port :631
+
+## Use the CLI
+
+Print a file to the printer named p1:
+
+    lpr -P p1 file.txt
+
+Create a printer
+
+    lpinfo -m # gets driver list
+
+    lpadmin -p p1 -v parallel:/dev/lp0 -m <driver>
+
+    lpoptions -d p1
+
+    cupsaccept p1
+    cupsenable p1
+
+    lpstat -d
+    lpq
+
+    lprm <jobid>
+    cancel -ax
+
+
+
+
+

@@ -224,5 +224,97 @@ Check selinux permissions if can’t access tftpboot:
 
     virt-install —name testvm —hvm —network=bridge:virbr0 —pxe —graphics spice —ram=728 —vcpus=1 —os-type=Linux —os-variant=rhel7 —disk path=/var/lib/libvirt/images/c7-auto.qcow2,size=9
 
+## Managing VMs
+
+### Configure a lab environment
+
+Add a static host:
+
+    virsh net-update default add ip-dhcp-host “<host mac='52:54:<rest-of-macaddr>' name='demo1' ip='192.168.56.11'/>” —live —config
+
+In the pxe tftp boot dir, /tftpboot/pxelinux.cfg/, create files based on the MAC address. E.g.
+
+     /tftpboot/pxelinux.cfg/01-52-54-00-00-00-01
+
+These can point to specific kickstart files.
+
+Create a vm
+
+    virt-install —name lab1 —hvm —network=bridge:virbr0,mac=52:54:00:00:00:01 —pxe —graphics spice —ram=728 —vcpus=1 —os-type=Linux —os-variant=rhel7 —disk path=/var/lib/libvirt/images/lab1.qcow2,size=9
+
+### Manage vm status
+
+Can use the GUI
+
+Open virsh cli
+
+    destroy lab1
+    start lab1
+
+    reboot lab1
+
+    list
+
+    list —all
+
+    undefine lab6 —remove-all-storage
+
+To monitor
+
+GUI preferences set which stats to monitor.
+
+For the CLI
+
+    yum install virt-top
+
+### Config VM Resources
+
+Note, VM disks can be /dev/vda 
+
+In virsh
+
+    dominfo lab1
+
+    autostart lab1
+
+    autostart lab1 —disable
+
+    shutdown lab1
+
+    setmaxmem lab1 1500M —config
+
+    dominfo lab1
+
+Can change some config when vm is running
+
+    setmem lab1 728M —live
+
+### Cloning and snapshots
+
+Need to power off a vm to clone it. Clones are tricky as the OS often needs re-config.
+
+### VM migrations
+
+- Setup shared NFS to store disk files
+- setup 2 kvm hosts
+- setup 1 VM and move between hosts
+
+NFS: edit /etc/exports to share a dir with a network, then
+
+    exportfs
+
+Setup shared storage in virtual machine manager. For each kvm host, add storage. The mount point must be the same on both hosts. In the NFS storage config, add a volume (the disk being used).
+
+On the second kvm host, connect to the nfs share and you should see the volume just created.
+
+Make sure networks are the same on both hosts.
+
+Create a new vm using the disk in nfs. Start the vm.
+
+In the new vm, disable the virtual disk cache so data isn’t lost on migration.
+
+Right-click on the VM and click migrate.
+
+
 
 
