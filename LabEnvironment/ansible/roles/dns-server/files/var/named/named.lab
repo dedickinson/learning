@@ -11,3 +11,5 @@ lab.example.com. IN SOA router.lab.example.com. root.lab.example.com. (
 lab.example.com. NS router.lab.example.com.
 router A  172.16.1.1
 time  CNAME  router
+centos-mirror CNAME router
+mirror CNAME router
