@@ -5,6 +5,7 @@
     - syslinux
     - tftp
     - tftp-server
+    - nginx
 
 - name: Allow TFTP access only for the trusted zone
   firewalld:
@@ -35,6 +36,18 @@
     - /usr/share/syslinux/menu.c32
     - /var/ftp/pub/distro/centos/7/images/pxeboot/vmlinuz
     - /var/ftp/pub/distro/centos/7/images/pxeboot/initrd.img
+
+- name: Create the Kickstart dir
+  file:
+    path: /var/ftp/kickstart
+    state: directory
+    mode: 0755
+
+- name: Prepare the Kickstart file
+  template:
+    src: templates/centos7-ks.cfg.j2
+    dest: /var/ftp/kickstart/centos7-ks.cfg
+    mode: 0444
 
 - name: Start and enable the TFTP Socket
   service:

@@ -23,6 +23,14 @@
     mode: 0640
   notify: restart dns
 
+- name: Copy the DNS resolv files over
+  copy:
+    src: files/etc/resolv.conf
+    dest: /etc/resolv.conf
+    owner: root
+    group: named
+    mode: 0644
+
 - name: Copy the DNS record file over
   copy:
     src: files/var/named/named.lab
@@ -31,6 +39,18 @@
     group: named
     mode: 0640
   notify: restart dns
+
+- find:
+    paths: "/etc/sysconfig/network-scripts/"
+    patterns: "ifcfg-enp0s*"
+  register: network_interfaces
+
+- name: Disable DNS config from DHCP
+  lineinfile:
+    path: "{{ item.path }}"
+    regexp: '^PEERDNS='
+    line: 'PEERDNS=no'
+  with_items: "{{ network_interfaces.files }}"
 
 - name: Start and enable the DNS service
   service:

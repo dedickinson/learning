@@ -21,7 +21,7 @@ LABEL local
 
 LABEL centos7-basic
   MENU LABEL ^2. CentOS 7 Install
-  KERNEL images/centos/7/vmlinuz
-  APPEND initrd=images/centos/7/initrd.img inst.ks=http://10.0.2.2:8000/kickstart/centos-ks.cfg ip=enp0s3:dhcp bootdev=enp0s3 ipv6.disable=1 inst.noninteractive inst.text
+  KERNEL vmlinuz
+  APPEND initrd=initrd.img inst.ks=ftp://172.16.1.1/kickstart/centos7-ks.cfg ip=enp0s3:dhcp bootdev=enp0s3 ipv6.disable=1 inst.noninteractive inst.text
 
 END

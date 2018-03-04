@@ -13,3 +13,4 @@ router A  172.16.1.1
 time  CNAME  router
 centos-mirror CNAME router
 mirror CNAME router
+proxy CNAME router

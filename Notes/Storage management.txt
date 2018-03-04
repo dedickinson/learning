@@ -10,15 +10,7 @@ LVMs are dynamic allocations of disk space
 
 ## Partitioning disks
 
-Linux file system overview:
 
-Withitn the disk is an MBR partition table (max 2Tb) with max 4 primary partitions and up to 15 logical partitions on one primary partition. 
-
-Alternatively there’s a GUID partition of up to 8ZB that can have up to 128 partitions. Linux SCSI drivers limit this to 15.
-
-On top of the partitions is a file system such as xfs or ext4
-
-Three partitioning tools: fdisk, gdisk, parted
 
 ### fdisk
 

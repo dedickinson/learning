@@ -1,0 +1,22 @@
+---
+- name: Copy central YUM repo config
+  copy:
+    src: files/etc/yum.repos.d/hosted.repo
+    dest: /etc/yum.repos.d/
+    owner: root
+    group: root
+    mode: 0644
+
+- find:
+    paths: "/etc/yum.repos.d/"
+    patterns: "*.repo"
+  register: yum_repos
+
+- name: Remove all other yum repos
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ yum_repos.files }}"
+  when: item.path not in managed_repos
+  notify: check yum updates
+    

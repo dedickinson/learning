@@ -1,14 +1,16 @@
 ---
 - hosts: router
+  vars_files:
+    - ~/.ansible-vaults/lab.yml
   tasks:
     - hostname:
         name: router.lab.example.com
     - import_role:
         name: router
     - import_role:
-        name: dhcp-server
-    - import_role:
         name: dns-server
+    - import_role:
+        name: dhcp-server
     - import_role:
         name: ftp-server
     - import_role:

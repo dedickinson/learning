@@ -1,0 +1,3 @@
+---
+managed_repos:
+  - /etc/yum.repos.d/hosted.repo

@@ -11,13 +11,20 @@ Command     | Description
 ------------|------------------------
 `yum whatprovides lsof` | Lists the package providing a file/app (e.g. `lsof`)
 
-## Service management
+## SystemD management
+
+### Services
 
 Command     | Description
 ------------|------------------------
 `systemctl start httpd`  | Start the service
 `systemctl stop httpd`  | Stop the service
 `systemctl enable httpd` | Enable the service to start at boot
+
+### Run levels
+Command     | Description
+------------|------------------------
+
 
 ## Firewall
 

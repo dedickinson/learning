@@ -3,12 +3,7 @@
   yum: name={{ item }} state=present
   with_items:
     - squid
-
-- name: Start and enable Squid
-  service:
-    name: squid
-    state: started
-    enabled: yes
+    - httpd
 
 - name: Configure squid
   copy:
@@ -19,11 +14,25 @@
     mode: 0640
   notify: "restart squid"
 
+- name: Configure Squid cache_dir
+  file:
+    path: /var/spool/squid
+    owner: root
+    group: squid
+    mode: 0775
+    state: directory
+
 - name: Configure the Firewall for Squid
   firewalld:
-    service: squid
+    service: http
     permanent: yes
     immediate: yes
     zone: lab-internal
     state: enabled
   notify: reload firewalld
+
+- name: Start and enable Squid
+  service:
+    name: squid
+    state: started
+    enabled: yes

@@ -1,4 +1,6 @@
 ---
+- import_role: 
+    name: proxied-yum
 - import_tasks: firewall.yml
 - import_tasks: users.yml
 - import_tasks: users-ansible.yml
