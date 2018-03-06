@@ -1,0 +1,6 @@
+---
+- hosts: canary
+  roles:
+    - base-server
+
+

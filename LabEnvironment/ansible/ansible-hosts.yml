@@ -8,7 +8,9 @@ all:
     
   hosts:
     router:
-      ansible_host: 192.168.200.10
+      ansible_host: router
+    canary:
+      ansible_host: 172.16.1.102
 
   # children:
     # web-servers: 
