@@ -24,7 +24,7 @@
 
 - name: Configure the Firewall for Squid
   firewalld:
-    service: http
+    service: squid
     permanent: yes
     immediate: yes
     zone: lab-internal
