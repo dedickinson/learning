@@ -1,0 +1,40 @@
+install
+cdrom
+text
+lang en_US.UTF-8
+keyboard us
+
+# This is the NAT network
+network --device enp0s3 --onboot yes --bootproto dhcp
+
+firewall --enabled --ssh
+authconfig --enableshadow --passalgo=sha512
+selinux --permissive
+timezone --utc Australia/Brisbane
+services --enabled=sshd
+skipx
+
+rootpw --iscrypted {{ root_user_password | mandatory }} --lock
+user --name=ansible --groups=wheel --uid=5001 --gid=5001 --password={{ ansible_user_password | mandatory }} --iscrypted
+
+bootloader --location=mbr
+zerombr
+clearpart --all --initlabel
+autopart --type=plain --fstype xfs --nohome
+
+poweroff --eject
+
+%packages 
+@core
+%end
+
+%post 
+mkdir /home/ansible/.ssh
+cat >/home/ansible/.ssh/authorized_keys<<EOM
+{{ lookup('file', ansible_ssh_public_key_file) }}
+EOM
+chown -R ansible.ansible /home/ansible/.ssh/
+chmod 700 /home/ansible/.ssh
+chmod 600 /home/ansible/.ssh/*
+sed --in-place=.bak -e 's/^%wheel.*/%wheel ALL=\(ALL\) NOPASSWD: ALL/' /etc/sudoers
+%end

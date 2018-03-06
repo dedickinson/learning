@@ -2,6 +2,7 @@ PROMPT 0
 NOESCAPE 0
 ALLOWOPTIONS 0
 TIMEOUT 100
+ONTIMEOUT local
 
 ### TUI
 DEFAULT menu.c32
@@ -16,12 +17,16 @@ MENU TITLE ---===[ Boot Menu ]===---
 LABEL local
   MENU DEFAULT
   MENU LABEL ^1. Boot from hard drive
-  COM32 chain.c32
-  APPEND hd0
+  LOCALBOOT 0
 
-LABEL centos7-basic
-  MENU LABEL ^2. CentOS 7 Install
+LABEL centos7-basic-cd
+  MENU LABEL ^2. CentOS 7 Install (cdrom)
   KERNEL vmlinuz
-  APPEND initrd=initrd.img inst.ks=ftp://172.16.1.1/kickstart/centos7-ks.cfg ip=enp0s3:dhcp bootdev=enp0s3 ipv6.disable=1 inst.noninteractive inst.text
+  APPEND initrd=initrd.img inst.ks=ftp://172.16.1.1/kickstart/centos7-ks-cd.cfg ip=enp0s3:dhcp bootdev=enp0s3 ipv6.disable=1 inst.noninteractive inst.text
+
+LABEL centos7-basic-ftp
+  MENU LABEL ^3. CentOS 7 Install (ftp)
+  KERNEL vmlinuz
+  APPEND initrd=initrd.img inst.ks=ftp://172.16.1.1/kickstart/centos7-ks-ftp.cfg ip=enp0s3:dhcp bootdev=enp0s3 ipv6.disable=1 inst.noninteractive inst.text
 
 END

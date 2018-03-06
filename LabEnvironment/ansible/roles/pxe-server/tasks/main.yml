@@ -43,10 +43,16 @@
     state: directory
     mode: 0755
 
-- name: Prepare the Kickstart file
+- name: Prepare the Kickstart file (ftp)
   template:
-    src: templates/centos7-ks.cfg.j2
-    dest: /var/ftp/kickstart/centos7-ks.cfg
+    src: templates/centos7-ks-ftp.cfg.j2
+    dest: /var/ftp/kickstart/centos7-ks-ftp.cfg
+    mode: 0444
+
+- name: Prepare the Kickstart file (cdrom)
+  template:
+    src: templates/centos7-ks-cd.cfg.j2
+    dest: /var/ftp/kickstart/centos7-ks-cd.cfg
     mode: 0444
 
 - name: Start and enable the TFTP Socket
