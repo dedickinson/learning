@@ -66,7 +66,7 @@ Configure `default` as follows:
  
     label local
         menu Boot from local disk
-        localboot 0xffff
+        LOCALBOOT 0
 
 Don’t need to restart service.
 

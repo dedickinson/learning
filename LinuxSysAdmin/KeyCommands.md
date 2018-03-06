@@ -32,6 +32,10 @@ Command     | Description
 ------------|------------------------
 `firewall-cmd --get-services` | Lists all pre-canned services known to the firewall
 
+## DHCP
+
+* Leases: `/var/lib/dhcpd/dhcpd.leases`
+
 ## Storage management
 
 Handy commands:
@@ -63,12 +67,19 @@ Command     | Description
 `lsblk`                 | Lists block devices
 `parted /dev/sdb print` | Get the partition details for a device
 `blkid -o list`         | Prints block device info, inc fs type and UUID
+`shred -v /dev/sdb`     | Deletes the device
 
 ### Partitioning
 
 Command     | Description
 ------------|------------------------
-`parted /dev/sdb` |
+`parted /dev/sdb` | Starts the `parted` cli for the nominated device
+cli: `print`      | Info about the device
+cli: `mklabel gtp`| Sets the disk to use the GUID partition table
+cli: `mkpart primary xfs 0% 25%` | Creates a primary partition with the `xfs` filesystem
+cli: `rm 1` | Removes partition 1
+cli: `quit` | Exits the `parted` cli
+
 
 
 ### XFS
@@ -78,3 +89,18 @@ Command     | Description
 `xfs_info /dev/sdb1` |
 
 ### System Storage manager
+
+Install:
+
+    yum install system-storage-manager lvm2
+
+Command     | Description
+------------|------------------------
+`ssm list ` | Lists info about detected devices, pools, volumes
+`ssm create --fs xfs -s 5G -n centos-distro /dev/sdc1 /dev/sdc2` | Creates a new 5Gig logical volume in the default pool (`lvm_pool`). The pool has 2 physical volumes (`/dev/sdc1`, `/dev/sdc2`)
+`ssm create --fs xfs -s 10G -n squid-cache`  | Creates a new logical volume in the default pool
+`ssm mount /dev/lvm-pool/centos-distro /mnt` | Temporary mount of a logical volume
+
+Example `/etc/fstab` entry:
+
+    /dev/lvm_pool/centos-distro /var/ftp/pub/distro	  xfs	  defaults	  0 0
