@@ -22,7 +22,7 @@ LUKS - Linux Unified Key Setup
     blkid |grep crypto_LUKS
     
     ## 2. Add to /etc/crypttab
-    luks UUID=f3c1e318-ca94-4741-9c49-8b753ba9197e
+    datacrypt UUID=f3c1e318-ca94-4741-9c49-8b753ba9197e
     
     ## 3. Configure in `fstab`
     /dev/mapper/datacrypt /datacrypt xfs defaults 0 0
