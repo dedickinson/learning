@@ -2,7 +2,33 @@
 
 LUKS - Linux Unified Key Setup
 
-## Adding logical volume and shred
+## Using SSM
+
+    yum install system-storage-manager cryptsetup
+
+    ssm create -n datacrypt -s 1G --fstype xfs -e luks -p crypt_pool /dev/sdb5 /dev/sdb6
+    
+    # To open and mount
+    cryptsetup open /dev/mapper/enc_pool-datacrypt datacrypt
+    mount /dev/mapper/datacrypt /mnt
+    
+    # To unmount and close
+    umount /mnt
+    cryptsetup close datacrypt
+    
+    # To mount at boot
+    
+    ## 1. Get UUID
+    blkid |grep crypto_LUKS
+    
+    ## 2. Add to /etc/crypttab
+    luks UUID=f3c1e318-ca94-4741-9c49-8b753ba9197e
+    
+    ## 3. Configure in `fstab`
+    /dev/mapper/datacrypt /datacrypt xfs defaults 0 0
+
+## Non-SSM approach
+### Adding logical volume and shred
 
     vgs #check free space
 
@@ -10,7 +36,7 @@ LUKS - Linux Unified Key Setup
 
     shred -v —iterations=1 /dev/vg1/enc
 
-## Check LUKS support and encrypt
+### Check LUKS support and encrypt
 
     grep -i DM_CRYPT /boot/config-$(uname -r)
 
@@ -25,7 +51,7 @@ If marked with an “m”, the module loads on demand
     cryptsetup isLuks /dev/vg1/enc
     echo $?
 
-## opening and formatting
+### opening and formatting
 
     cryptsetup luksOpen /dev/vg1/enc enc_vol
 
@@ -33,7 +59,7 @@ If marked with an “m”, the module loads on demand
 
     mkfs.xfs /dev/mapper/enc_vol
 
-## Mount at boot
+### Mount at boot
 
 To close the volume:
 
