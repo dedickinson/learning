@@ -21,12 +21,29 @@ Make sure host is in /etc/hosts
     systemctl enable slapd
     systemctl status slapd
     
-    firewall-cmd —permanent —add-service=ldap
-    firewall-cmd —reload
+    firewall-cmd --permanent --add-service=ldap
+    firewall-cmd --permanent --add-service=ldaps
+    firewall-cmd --reload
     
-    netstat -antup | grep -i 389
+    netstat -antup
 
 ## Configure
+
+Edit `/etc/openldap/ldap.conf` to be:
+
+    BASE    dc=lab,dc=example,dc=com
+    URI     ldap://server1.lab.example.com
+    # ldap://ldap-master.example.com:666
+
+    #SIZELIMIT      12
+    #TIMELIMIT      15
+    #DEREF          never
+
+    TLS_CACERTDIR   /etc/openldap/certs
+    TLS_REQCERT     never
+
+    # Turning this off breaks GSSAPI used with krb5 when rdns = false
+    SASL_NOCANON    on
 
 Configure `~/db.ldif`:
 
@@ -52,7 +69,7 @@ Configure `~/monitor.ldif`:
     dn: olcDatabase={1}monitor,cn=config
     changetype: modify
     replace: olcAccess
-    olcAccess: {0}to * by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external, cn=auth" read by dn.base="cn=ldapadm,dc=lab,dc=example,dc=com" read by * none
+    olcAccess: {0}to * by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" read by dn.base="cn=ldapadm,dc=lab,dc=example,dc=com" read by * none
 
 Then run `ldapmodify -Y EXTERNAL  -H ldapi:/// -f monitor.ldif`
 
@@ -131,24 +148,26 @@ Use the migrationtools to create an ldif:
     /usr/share/migrationtools/migrate_passwd.pl penguin-passwd user.ldif
     vi user.ldif
 
+And edit the `user.ldif` file:
 
-dn: uid=penguin,ou=People,dc=lab,dc=example,dc=com
-uid: penguin
-cn: penguin
-objectClass: account
-objectClass: posixAccount
-objectClass: top
-objectClass: shadowAccount
-userPassword: {crypt}$6$3.5HTNtR$VTsVfJGnjrQdD5fWeyVyP5ZqzqPR4c.tHSrizGOcOpUmpd9quOpi8WIUaYNVbmH2.lKDuVsxR7LaAcTL7I7xH/
-shadowLastChange: 17597
-shadowMin: 0
-shadowMax: 99999
-shadowWarning: 7
-loginShell: /bin/bash
-uidNumber: 1001
-gidNumber: 1001
-homeDirectory: /home/penguin
+    dn: uid=penguin,ou=People,dc=lab,dc=example,dc=com
+    uid: penguin
+    cn: penguin
+    objectClass: account
+    objectClass: posixAccount
+    objectClass: top
+    objectClass: shadowAccount
+    userPassword: {crypt}$6$3.5HTNtR$VTsVfJGnjrQdD5fWeyVyP5ZqzqPR4c.tHSrizGOcOpUmpd9quOpi8WIUaYNVbmH2.lKDuVsxR7LaAcTL7I7xH/
+    shadowLastChange: 17597
+    shadowMin: 0
+    shadowMax: 99999
+    shadowWarning: 7
+    loginShell: /bin/bash
+    uidNumber: 1001
+    gidNumber: 1001
+    homeDirectory: /home/penguin
 
+Then run:
 
     ldapadd -x -W -D “cn=ldapadm,dc=lab,dc=example,dc=com” -f user.ldif
 
