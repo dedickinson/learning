@@ -16,7 +16,7 @@ LUKS - Linux Unified Key Setup
     umount /mnt
     cryptsetup close datacrypt
     
-    # To mount at boot
+### Mount at boot
     
     ## 1. Get UUID
     blkid |grep crypto_LUKS
