@@ -4,6 +4,7 @@ See also:
 
 - https://www.itzgeek.com/how-tos/linux/centos-how-tos/step-step-openldap-server-configuration-centos-7-rhel-7.html
 - https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/system-level_authentication_guide/openldap
+- https://docs.oracle.com/cd/E52668_01/E54669/html/ol7-s9-auth.html
 
 ## Check hostname
 
@@ -33,14 +34,16 @@ Edit `/etc/openldap/ldap.conf` to be:
 
     BASE    dc=lab,dc=example,dc=com
     URI     ldap://server1.lab.example.com
-    # ldap://ldap-master.example.com:666
 
     #SIZELIMIT      12
     #TIMELIMIT      15
     #DEREF          never
 
     TLS_CACERTDIR   /etc/openldap/certs
-    TLS_REQCERT     never
+    TLS_REQCERT     allow
+
+    # Server settings
+    TLSVerifyClient never
 
     # Turning this off breaks GSSAPI used with krb5 when rdns = false
     SASL_NOCANON    on
@@ -82,6 +85,7 @@ Create a certificate (make sure you set the Common Name to server1.lab.example.c
 Then run
 
     chown -R ldap:ldap /etc/openldap/certs/*.pem
+    chmod 0400 /etc/openldap/certs/*.pem
 
 Configure `~/certs.ldif`:
 
@@ -240,14 +244,22 @@ The `penguin` user now appears:
 List users and groups:
 
     grep ldap /etc/nsswitch.conf
-    
-Edit etc/nsswitch.con to change use of LDAP info
 
-Generally don’t configure the ldap server as an ldap client
+To connect to the LDAP server without TLS, edit `TLS_REQCERT` in `/etc/openldap/ldap.conf`:
+
+    TLS_CACERTDIR /etc/openldap/cacerts
+    TLS_REQCERT never
+
+    # Turning this off breaks GSSAPI used with krb5 when rdns = false
+    SASL_NOCANON    on
+    URI ldap://server1.lab.example.com
+    BASE dc=lab,dc=example,dc=com
 
 # Tips
 
-After changing the client connection, run `systemctl restart nslcd`
+- After changing the client connection, run `systemctl restart nslcd`
+- Generally don't configure the ldap server as an ldap client
+- Edit `etc/nsswitch.conf` to change use of LDAP info
 
 ## Change an entry
 
