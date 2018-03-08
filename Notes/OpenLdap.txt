@@ -7,7 +7,7 @@ See also:
 
 ## Check hostname
 
-    hostname #check it’s fully qualified
+    hostnamectl #check it’s fully qualified
 
 Make sure host is in /etc/hosts
 
@@ -153,9 +153,9 @@ And edit the `user.ldif` file:
     dn: uid=penguin,ou=People,dc=lab,dc=example,dc=com
     uid: penguin
     cn: penguin
+    objectClass: top
     objectClass: account
     objectClass: posixAccount
-    objectClass: top
     objectClass: shadowAccount
     userPassword: {crypt}$6$3.5HTNtR$VTsVfJGnjrQdD5fWeyVyP5ZqzqPR4c.tHSrizGOcOpUmpd9quOpi8WIUaYNVbmH2.lKDuVsxR7LaAcTL7I7xH/
     shadowLastChange: 17597
@@ -169,9 +169,24 @@ And edit the `user.ldif` file:
 
 Then run:
 
-    ldapadd -x -W -D “cn=ldapadm,dc=lab,dc=example,dc=com” -f user.ldif
+    ldapadd -x -W -D "cn=ldapadm,dc=lab,dc=example,dc=com" -f user.ldif
 
+## Query
 
+Request all objects:
+
+    ldapsearch -x -b 'dc=lab,dc=example,dc=com' '(objectclass=*)'
+    
+Search penguin:
+
+    ldapsearch -x -b 'dc=lab,dc=example,dc=com' '(uid=penguin)'
+    ldapsearch -x -b dc=lab,dc=example,dc=com "(&(objectclass=account) (uid=penguin))"
+    ldapsearch -x -b dc=lab,dc=example,dc=com "(&(objectclass=account) (uid=penguin))" uid homeDirectory
+    
+Ask about the Person class:
+
+    ldapsearch -x -LLL -b cn=Subschema -s base '(objectClass=subschema)' attributeTypes dITStructureRules objectClasses Person
+    
 
 # OLD?
 ## Configure OpenLDAP
