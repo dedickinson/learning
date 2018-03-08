@@ -139,16 +139,18 @@ Change the default:
 
 ### Modify and delete accounts
 
-    sudo usermod -c “User One” user1
+Change the user's comment field:
+
+    sudo usermod -c "Captain Penguin" penguin
 
 A user can change their shell:
 
     chsh -l
-    chsh -s /bin/sh tux
+    chsh -s /bin/sh penguin
 
 To delete a user and their home directory:
 
-    sudo userdel -r user1
+    sudo userdel -r badpenguin
 
 To clean up files from a deleted user (who had user id 1004):
 
@@ -156,9 +158,9 @@ To clean up files from a deleted user (who had user id 1004):
 
 ## Groups
 
-    /etc/group
+Defined in: `/etc/group`
 
-To change group,  the user can
+To change their current group, the user can
 
     newgrp wheel
     # use exit to drop back after creating resources etc
@@ -167,9 +169,9 @@ To create a group:
     
     sudo groupadd sales
 
-Group passwords are set in /etc/gshadow but they don’t usually have passwords
+Group passwords are set in `/etc/gshadow` but they don’t usually have passwords
 
-### Membership
+### Group membership
 
     id -G
     id -Gn
@@ -180,38 +182,25 @@ To modify a user’s group, use usermod
     sudo gpasswd -a fred sales
     sudo gpasswd -M fred,jane sales
 
-Set group admins using gpasswd -A
+Set group admins using `gpasswd -A`
 
-Group membership changes require users to logout and login
+Group membership changes require users to logout and login.
 
-### SGID
+### SGID - Set Group ID
 
-    sudo yum install httpd w3m
-    sudo systemctl status httpd
-    ls -la /var/www/html
-    grep apache /etc/group
-    sudo chgrp -R apache /var/www
-    sudo chmod -R o= /var/www
+    newgrp staff
+    mkdir testdir
+    chmod g+s testdir
+    newgrp # change back
     
-    sudo -i
-    cd /var/www
-    chmod g+s .
-    umask 027
-    vi test.html
+Running `ls -l` will yield:
+
+    drwxr-sr-x. 2 penguin staff 6 Mar  8 15:27 testdir
+
+Files created in `testdir` will now be allocated to the `staff` group.
 
 ### Group passwords
 
-Change primary group id, use newgrp sales
-
 Set a group password to allow users to switch to a group they’re not a member of. But this uses a shared password and is silly.
-
-
-
-
-
-
-
-
-
 
 
