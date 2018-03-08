@@ -2,23 +2,50 @@
 
 ## Configure NTP
 
-Server 1 uses external time, Server 2 uses Server 1
+Server 1 uses external time, Server 2 uses Server 1 as a time server
 
-Server 1:
+### Server 1
+
+Install `ntp`:
 
     yum install ntp
 
-Allow local network access in ntp.conf but adding a restrict line
-
 Start and enable ntpd
 
-    ntpq -p # queries peers
-    firewall-cmd —add-service=ntp —permanent
-    firewall -cmd —reload
+    systemctl start ntpd
+    systemctl enable ntpd
+    firewall-cmd --add-service=ntp --permanent
+    firewall-cmd --reload
+
+Allow local network access in `/etc/ntp.conf` by adding a restrict line
+
+    restrict 172.20.63.0 mask 255.255.0.0 nomodify notrap
+
+Query the time servers:
+
+    ntpq -p
 
 Make sure /etc/hosts or dns have host entries
 
-On second server’s ntpd.conf, remove public ntp server and point to master using the iburst and prefer flags. Restart ntpd. Check with ntpq -p
+### Server 2
+
+Install `ntp`:
+
+    yum install ntp
+
+Start and enable ntpd
+
+    systemctl start ntpd
+    systemctl enable ntpd
+
+Edit `/etc/ntpd.conf`, to remove the public ntp servers and point to master using the `iburst` and `prefer` flags. 
+
+    server server1.lab.example.com iburst prefer
+
+Restart ntpd and check:
+
+    systemctl restart ntpd
+    ntpq -p
 
 # Install and Configure
 
