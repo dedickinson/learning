@@ -1,8 +1,11 @@
 # Users and groups
 
-    /etc/passwd # local users
+Local users are listed in `/etc/passwd`
+
+Explore the various auth elements:
 
     getent passwd 
+    getent passwd penguin
 
     # name services:
     grep passwd /etc/nsswitch.conf
@@ -14,18 +17,17 @@
 
 ## Login scripts
 
-Login shells (su -l) vs non login shells (su)
+Login shells (`su -l`) vs non login shells (`su`)
 
-The login shell is a new login via ssh, console, su - or su -l
-
-Non-login shells occur when calling su (no Params) or bash
+- The login shell is a new login via ssh, console, `su -` or `su -l`
+- Non-login shells occur when calling su (no Params) or bash
 
 Login shells run:
 
-1. /etc/profile
-1. ~/.bash_profile
-1. ~/.bashrc (called by ~/.bash_profile)
-1. /etc/bashrc (called by ~/.bashrc)
+1. `/etc/profile`
+1. `~/.bash_profile`
+1. `~/.bashrc` (called by `~/.bash_profile`)
+1. `/etc/bashrc` (called by `~/.bashrc`)
 
 Non login shells run:
 
