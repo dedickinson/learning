@@ -52,13 +52,10 @@ Logout scripts:
     ls profile*
     ls bash*
 
-/etc/profile.d/ contains profile scripts
-
-Prompt ($PS1) is set in bashrc 
-
-Don’t set PATH in rc files as it keeps appending each call to bash - set it in profile files
-
-Need to export variables in profile files
+- `/etc/profile.d/` contains profile scripts
+- The prompt (`$PS1`) is set in bashrc 
+- Don’t set PATH in rc files as it keeps appending each call to bash - set it in profile files
+- Need to export variables in profile files
 
 ## Home directory templates
 
@@ -67,6 +64,8 @@ Need to export variables in profile files
 Holds templates used when a new home dir has been created
 
 ## User accounts
+
+Obtain info about yourself and others:
 
     id # current account
     id root
