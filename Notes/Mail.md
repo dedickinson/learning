@@ -4,24 +4,26 @@
 
     yum install postfix
 
-    systemctl {enable,start} postfix
+    systemctl enable postfix
+    systemctl start postfix
 
 Service runs on port 25.
 
-## Configure
+## Configure mail server
 
-Log: /var/log/maillog
+- Log: `/var/log/maillog`
+- Configuration file: `/etc/postfix/main.cf`
 
-File: /etc/postfix/main.cf
+To check the configuration:
 
     postconf # display all config
     postconf -n # display non-defaults
 
-Open /etc/postfix/main.cf and take a look. First, back it it
+Open `/etc/postfix/main.cf` and take a look. First, back it up:
 
     cp main.cf main.cf.$(date +%F)
 
-Use postfix to configure settings
+Use postconf to configure settings:
 
     postconf -e inet_protocols=ipv4
     postconf -e inet_interfaces=all
@@ -30,7 +32,7 @@ Use postfix to configure settings
 
     netstat -ltn
 
-## Configure DMX records
+### Configure DMX records
 
 Edit zone file for domain (eg lab.named)
 
@@ -38,33 +40,43 @@ Edit zone file for domain (eg lab.named)
 
 Restart named and check with dig
 
-Configure postfix
+## Configure postfix
 
-    postconf -e ‘mydestination=localhost,$mydomain’
+    postconf -e 'mydestination=localhost,$mydomain'
 
-    postconf -e ‘myorigin=$mydomain’
+    postconf -e 'myorigin=$mydomain'
 
     postfix check
 
     systemctl restart postfix
+    
+    postconf mynetworks # these can route mail through this server
 
-# SMTP Relay
+## Configure SMTP Relay
 
 On client systems:
 
+    yum install postfix
+
+    systemctl enable postfix
+    systemctl start postfix
+
     postconf -e inet_protocols=ipv4
     postconf -e inet_interfaces=all
-    postconf -e relayhost=mail.lab.example.com
+    postconf -e relayhost=server1.lab.example.com
 
     postfix check
 
     systemctl restart postfix
 
-Install mailx on clients for testing.
+## Test the mail setup
 
-On the mail server
+Install mailx on clients for testing:
 
-    postconf mynetworks # these can route mail through this server
+    yum install mailx
+    
+    mailx penguin@lab.example.com
+
 
 ## Dovecot IMAP/POP3 server
 
