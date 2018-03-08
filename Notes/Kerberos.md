@@ -47,8 +47,6 @@ Restart ntpd and check:
     systemctl restart ntpd
     ntpq -p
 
-# Install and Configure
-
 ## Random number generator
 
 Need a random number generator
@@ -63,104 +61,148 @@ Change ExecStart value to
 
 Then
 
-    systemctl daemon-restart
+    systemctl daemon-reload
     systemctl start rngd
     
-### Kerberos install
+## Kerberos install
 
     yum install krb5-server krb5-workstation pam_krb5
 
+### Configure
+
     cd /var/kerberos/krb5kdc
 
-    ls
+Edit `kdc.conf` to use the correct domain:
+    
+    [kdcdefaults]
+     kdc_ports = 88
+     kdc_tcp_ports = 88
 
-    cat kadm5.acl
-    cat kdc.conf
+    [realms]
+     LAB.EXAMPLE.COM = {
+      #master_key_type = aes256-cts
+      acl_file = /var/kerberos/krb5kdc/kadm5.acl
+      dict_file = /usr/share/dict/words
+      admin_keytab = /var/kerberos/krb5kdc/kadm5.keytab
+      supported_enctypes = aes256-cts:normal aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal camellia256-cts:normal camellia128-cts:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal
+     }
+    
+Edit `kadm5.acl`:
 
-Default config uses example.com
+    */admin@LAB.EXAMPLE.COM *
 
-Client file
+Configure the client file `/etc/krb5.conf`
 
-    /etc/krb5.com
+    # Configuration snippets may be placed in this directory as well
+    includedir /etc/krb5.conf.d/
 
-Set kdc and admin_server, and domain_realm, default_realm
+    [logging]
+     default = FILE:/var/log/krb5libs.log
+     kdc = FILE:/var/log/krb5kdc.log
+     admin_server = FILE:/var/log/kadmind.log
 
-    kdb5_util create -s -r EXAMPLE.COM
+    [libdefaults]
+     dns_lookup_realm = false
+     ticket_lifetime = 24h
+     renew_lifetime = 7d
+     forwardable = true
+     rdns = false
+     default_realm = LAB.EXAMPLE.COM
+     default_ccache_name = KEYRING:persistent:%{uid}
 
-Enable and start krb5kdc kadmin
+    [realms]
+    LAB.EXAMPLE.COM = {
+      kdc = server1.lab.example.com
+      admin_server = server1.lab.example.com
+     }
 
-    netstat -ltn
+    [domain_realm]
+    lab.example.com = LAB.EXAMPLE.COM
 
-    firewall-cmd —add-service=kpasswd —permanent
+Setup the Kerberos database:
 
-    firewall-cmd —add-service=kerberos —permanent
+    kdb5_util create -s -r LAB.EXAMPLE.COM
 
-    Firewall-cmd —add-port=749/tcp —permanent
+Enable and start `krb5kdc` and `kadmin`:
 
-    firewall-cmd —reload
+    systemctl enable {krb5kdc,kadmin}
+    systemctl start {krb5kdc,kadmin}
+    
+    netstat -ltnp
 
-Configure kerberos
+#### Firewall
 
+    firewall-cmd --add-service=kpasswd --permanent
+
+    firewall-cmd --add-service=kerberos --permanent
+
+    firewall-cmd --add-port=749/tcp --permanent
+
+    firewall-cmd --reload
+
+### Configure kerberos
+
+Enter the Kerberos CLI:
     kadmin.local
+    
+Then configure some principals:
+
     listprincs
+
     addprinc root/admin
 
-    addprinc fred
+    addprinc penguin
 
-    addprinc —random host/server1.example.com
+    addprinc -randkey host/server1.lab.example.com
 
-    ktadd host/server1.example.com
+    ktadd host/server1.lab.example.com
 
     quit
 
-### Authenticate to Ssh
+# Authenticate to SSH
 
-On server1
+On Server1
 
     vi /etc/ssh/ssh_config
 
-Set GSSAPIAuthentication and GSSAPIDelegateCredentials to yes
+Set `GSSAPIAuthentication` and `GSSAPIDelegateCredentials` to `yes` and reload SSHD
 
     systemctl reload sshd
 
-    authconfig —enablekrb5 —update
+Enable:
 
-As a standard user
+    authconfig --enablekrb5 --update
 
-    klist # to check current tokens
+As a standard user (e.g. `penguin`):
 
     kinit 
 
     klist # will now have key
 
-    ssh server1.example.com
+    ssh server1.lab.example.com
 
-Logs in using the kerberos key
+This logs in using the kerberos key
 
 To remove the key
 
     kdestroy
+
+## Server 2 - Kerberos client
 
 To configure another server to use kerberos 
 
     yum install krb5-workstation pam_krb5
 
 Copy the /etc/krb5.conf file from server1
-
-    kadmin
+    
+In the `kadmin` CLI:
     listprincs
 
-    addprinc -randkey host/server2.example.com
+    addprinc -randkey host/server2.lab.example.com
 
-    ktadd host/server2.example.com
+    ktadd host/server2.lab.example.com
 
     quit
-
-Setup SSH as before then
-
-    authconfig-tui
-
-    systemctl reload sshd
 
 Then as a normal user
 
@@ -168,6 +210,9 @@ Then as a normal user
     klist
  
 SSH into server1
+
+### Configure Kerberos for login:
+
 
 
 
