@@ -154,8 +154,10 @@ Then configure some principals:
     addprinc penguin
 
     addprinc -randkey host/server1.lab.example.com
-
     ktadd host/server1.lab.example.com
+    
+    addprinc -randkey host/server2.lab.example.com
+    ktadd host/server2.lab.example.com
 
     quit
 
@@ -195,25 +197,22 @@ To configure another server to use kerberos
 
 Copy the /etc/krb5.conf file from server1
     
-In the `kadmin` CLI:
-    listprincs
-
-    addprinc -randkey host/server2.lab.example.com
-
-    ktadd host/server2.lab.example.com
-
-    quit
-
-Then as a normal user
+Then as a normal user (e.g. `penguin`)
 
     kinit
     klist
  
-SSH into server1
+SSH into server1:
+
+    ssh server1.lab.example.com
 
 ### Configure Kerberos for login:
 
+Start `authconfig-tui` and change off LDAP Auth over to Kerberos Auth.
 
+## Manage kerberos
+
+Use `kadmin` to manage objects such as users. Type `?` in the cli for a list of commands (e.g. `change_password`).
 
 
 
