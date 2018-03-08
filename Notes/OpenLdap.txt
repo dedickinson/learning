@@ -134,6 +134,17 @@ Then run
 
     ldapadd -x -W -D "cn=ldapadm,dc=lab,dc=example,dc=com" -f base.ldif
 
+## Create a Group
+
+And edit the `group.ldif` file:
+
+    dn: cn=employees,ou=Group,dc=lab,dc=example,dc=com
+    cn: employees
+    gidNumber: 5001
+    objectClass: top
+    objectclass: posixGroup
+
+ldapadd -x -W -D "cn=ldapadm,dc=lab,dc=example,dc=com" -f group.ldif
 
 ## Create users
 
@@ -163,8 +174,8 @@ And edit the `user.ldif` file:
     shadowMax: 99999
     shadowWarning: 7
     loginShell: /bin/bash
-    uidNumber: 1001
-    gidNumber: 1001
+    uidNumber: 5001
+    gidNumber: 5001
     homeDirectory: /home/penguin
 
 Then run:
@@ -186,7 +197,70 @@ Search penguin:
 Ask about the Person class:
 
     ldapsearch -x -LLL -b cn=Subschema -s base '(objectClass=subschema)' attributeTypes dITStructureRules objectClasses Person
+
+# LDAP Client systems
+
+Make sure `/etc/hosts` is correctly set up with the server hostnames and addresses
+
+## Install
+
+    yum install openldap-clients nss-pam-ldapd
     
+Try out a query:
+
+    ldapsearch -x
+    ldapsearch -x -LLL ldap://server1.lab.example.com -b dc=lab,dc=example,dc=com
+    ldapsearch -x -LLL ldaps://server1.lab.example.com -b dc=lab,dc=example,dc=com
+    ldapsearch -x ldaps://server1.lab.example.com -b dc=lab,dc=example,dc=com "(&(objectclass=account) (uid=penguin))"
+    ldapsearch -x ldaps://server1.lab.example.com -b dc=lab,dc=example,dc=com "(uid=penguin)"
+    
+## Configure
+
+Create user home directories ad-hoc:
+
+    authconfig --enablemkhomedir --update
+
+Use the `authconfig-tui` tool:
+
+    authconfig-tui
+    
+Make sure you:
+
+* Enable LDAP for User Information **AND** Authentication
+    
+Check the auth order:
+
+    grep passwd /etc/nsswitch.conf
+
+The `penguin` user now appears:
+
+    getent passwd|grep penguin
+    getent group employees
+
+List users and groups:
+
+    grep ldap /etc/nsswitch.conf
+    
+Edit etc/nsswitch.con to change use of LDAP info
+
+Generally don’t configure the ldap server as an ldap client
+
+# Tips
+
+After changing the client connection, run `systemctl restart nslcd`
+
+## Change an entry
+
+To change a property, create a file (e.g. `user-mod.ldif`):
+
+    dn: uid=penguin,ou=People,dc=lab,dc=example,dc=com
+    changetype: modify
+    replace: gidNumber
+    gidNumber: 5001
+   
+Then run:
+
+    ldapmodify -x -W -D "cn=ldapadm,dc=lab,dc=example,dc=com" -f user-mod.ldif
 
 # OLD?
 ## Configure OpenLDAP
@@ -272,7 +346,7 @@ Check the auth order:
 
 ## List users and groups
 
-    grep ldap /etc/nsswitch.con
+    grep ldap /etc/nsswitch.conf
     
 Edit etc/nsswitch.con to change use of LDAP info
 
