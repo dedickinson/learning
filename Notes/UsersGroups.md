@@ -31,24 +31,24 @@ Login shells run:
 
 Non login shells run:
 
-1. ~/.bashrc (called by ~/.bash_profile)
-1. /etc/bashrc (called by ~/.bashrc)
+1. `~/.bashrc` (called by `~/.bash_profile`)
+1. `/etc/bashrc` (called by `~/.bashrc`)
 
 To determine user context:
 
-* echo $USER
-* id
-* whoami
+* `echo $USER`
+* `id`
+* `whoami`
 
 But some things don’t change over for a non login shell. E.g. $USER won’t change
 
 Logout scripts:
 
-* 
+* `~/.bash_logout`
 
 ## System login scripts
 
-    cd
+    cd etc
     ls profile*
     ls bash*
 
@@ -83,40 +83,44 @@ Holds templates used when a new home dir has been created
 
     sudo useradd jim -G staff -s /bin/sh
 
-Passwords
+### Passwords
 
     sudo passwd jane 
 
     sudo grep jane /etc/shadow
 
-    echo ‘fred:paasword1’| sudo chpasswd
+    echo 'fred:paasword1'| sudo chpasswd
 
-    chpasswd
+The `chpasswd` is used for batch changes.
 
-### Password age
+#### Shadow 
 
-    chage -tux
-
-Shadow file allows passwords to be inaccessible to regular users
+Shadow file allows passwords to be inaccessible to regular users: `/etc/shadow`
 
 Move passwords in and out of /etc/passwd:
 
     pwunconv 
     pwconv
 
-chage can be used to set password ageing 
+#### Password age
+
+To configure the aging details for the `penguin` account:
+
+    chage penguin
 
 Password ageing data is in /etc/shadow
 
+#### Lock an account
+
 To lock an account
 
-    sudo passwd -l user1
+    sudo passwd -l penguin
 
-The user’s password will now be prefixed with !! In shadow
+The user’s password will now be prefixed with `!!` in `/etc/shadow`
 
 To unlock
 
-    ?
+    sudo passwd -u penguin
 
 ## User defaults
 
