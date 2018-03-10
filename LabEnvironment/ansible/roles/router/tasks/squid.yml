@@ -27,8 +27,25 @@
     service: squid
     permanent: yes
     immediate: yes
-    zone: lab-internal
+    zone: "{{ item }}"
     state: enabled
+  with_items:
+    - lab-internal
+    - lab-dmz
+    - lab-public
+  notify: reload firewalld
+
+- name: Configure the Firewall for Squid HTTP
+  firewalld:
+    service: http
+    permanent: yes
+    immediate: yes
+    zone: "{{ item }}"
+    state: enabled
+  with_items:
+    - lab-internal
+    - lab-dmz
+    - lab-public
   notify: reload firewalld
 
 - name: Start and enable Squid

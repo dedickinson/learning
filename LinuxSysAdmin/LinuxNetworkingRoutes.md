@@ -9,7 +9,6 @@ To see routes:
 
 The `route` command has been replaced by `ip r s`
 
-
 * `ip r add default via 192.168.56.104`
     * non persistent
 * `/etc/sysconfig/network-scripts` - device config contains gateway and defroute config

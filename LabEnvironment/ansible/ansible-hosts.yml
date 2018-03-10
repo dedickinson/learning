@@ -9,10 +9,7 @@ all:
   hosts:
     router:
       ansible_host: router
-    canary:
-      ansible_host: 172.16.1.102
-
-  # children:
-    # web-servers: 
-      # hosts:
-        
+    canary-internal:
+      ansible_host: 172.16.1.50
+    canary-dmz:
+      ansible_host: 172.16.100.50

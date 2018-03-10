@@ -18,5 +18,14 @@
     state: absent
   with_items: "{{ yum_repos.files }}"
   when: item.path not in managed_repos
-  notify: check yum updates
+  #notify: check yum updates
     
+- name: Copy over the required GPG keys
+  copy:
+    src: "{{ item }}"
+    dest: /etc/pki/rpm-gpg/
+    owner: root
+    group: root
+    mode: 0644
+  with_fileglob:
+      - files/etc/pki/rpm-gpg/*

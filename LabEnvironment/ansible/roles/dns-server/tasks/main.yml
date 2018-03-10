@@ -10,8 +10,12 @@
     service: dns
     permanent: yes
     immediate: yes
-    zone: lab-internal
+    zone: "{{ item }}"
     state: enabled
+  with_items:
+    - lab-internal
+    - lab-dmz
+    - lab-public
   notify: reload firewalld
 
 - name: Copy the DNS Config files over

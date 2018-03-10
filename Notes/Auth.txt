@@ -1,0 +1,11 @@
+# Authentication 
+
+authconfig --savebackup=/backups/authconfigbackup20170701
+
+
+authconfig --enableldap --enableldapauth -- ldapserver=ldap://ldap.example.com:389,ldap://ldap2.example.com:389 -- ldapbasedn="ou=people,dc=example,dc=com" --enableldaptls -- ldaploadcacert=https://ca.server.example.com/caCert.crt --update
+
+authconfig --passminlen=9 --passminclass=3 -- passmaxrepeat=2 -passmaxclassrepeat=2 --enablerequpper --enablereqother -- update
+
+
+authconfig NIS or LDAP options --enablekrb5 --krb5realm EXAMPLE --krb5kdc kdc.example.com:88,server.example.com:88 -- krb5adminserver server.example.com:749 --enablekrb5kdcdns -- enablekrb5realmdns --update

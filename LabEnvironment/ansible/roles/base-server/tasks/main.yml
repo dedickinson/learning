@@ -1,4 +1,12 @@
 ---
+- lineinfile:
+    path: /etc/profile.d/proxy.sh
+    line: 'export http_proxy=http://mirror.lab.example.com:3128/'
+    create: yes
+    state: present
+    owner: root
+    group: root
+    mode: 0644
 - import_role: 
     name: proxied-yum
 - import_tasks: firewall.yml

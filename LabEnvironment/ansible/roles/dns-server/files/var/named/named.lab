@@ -14,3 +14,7 @@ time  CNAME  router
 centos-mirror CNAME router
 mirror CNAME router
 proxy CNAME router
+mail CNAME router
+lab.example.com. MX 10 mail.lab.example.com
+canaryinternal A 172.16.1.50
+canarydmz A 172.16.100.50

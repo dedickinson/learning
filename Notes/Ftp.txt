@@ -2,7 +2,7 @@
 
 ## Side note: Setup DNS client
 
-In the ifcfg script for the network interface, change the PEERSNS entry and add DNS1 entries for manual config.
+In the `ifcfg` script for the network interface, change the PEERSNS entry and add DNS1 entries for manual config.
 
 ## Install vsftpd
 

@@ -1,0 +1,38 @@
+---
+- name: Remove Sendmail Server
+  yum: name={{ item }} state=removed
+  with_items:
+    - sendmail
+
+- name: Install Postfix Server
+  yum: name={{ item }} state=present
+  with_items:
+    - postfix
+
+- name: Allow SMTP access only for the trusted zone
+  firewalld:
+    service: smtp
+    permanent: yes
+    immediate: yes
+    zone: "{{ item }}"
+    state: enabled
+  with_items:
+    - lab-internal
+    - lab-dmz
+    - lab-public
+  notify: reload firewalld
+
+- name: Configure via postconf
+  shell: |
+    postconf -e inet_protocols=ipv4
+    postconf -e inet_interfaces=all
+    postconf -e 'mydestination=localhost,$mydomain'
+    postconf -e ‘myorigin=$mydomain’
+    postfix check
+  notify: restart postfix
+
+- name: Start and enable the Postfix service
+  service:
+    name: postfix
+    state: started
+    enabled: yes

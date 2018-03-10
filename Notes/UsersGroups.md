@@ -20,7 +20,7 @@ Explore the various auth elements:
 Login shells (`su -l`) vs non login shells (`su`)
 
 - The login shell is a new login via ssh, console, `su -` or `su -l`
-- Non-login shells occur when calling su (no Params) or bash
+- Non-login shells occur when calling `su` (no Params) or `bash`
 
 Login shells run:
 

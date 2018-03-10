@@ -9,8 +9,12 @@
     service: ftp
     permanent: yes
     immediate: yes
-    zone: lab-internal
+    zone: "{{ item }}"
     state: enabled
+  with_items:
+    - lab-internal
+    - lab-dmz
+    - lab-public
   notify: reload firewalld
 
 - name: Copy the FTP Config files over
@@ -24,6 +28,6 @@
 
 - name: Start and enable the FTP service
   service:
-    name: named
+    name: vsftpd
     state: started
     enabled: yes

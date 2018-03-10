@@ -4,20 +4,21 @@
 
     yum install postfix
 
-    systemctl {enable,start} postfix
+    systemctl enable postfix
+    systemctl start postfix
 
 Service runs on port 25.
 
 ## Configure
 
-Log: /var/log/maillog
+Log: `/var/log/maillog`
 
-File: /etc/postfix/main.cf
+Configuration file: `/etc/postfix/main.cf`
 
     postconf # display all config
     postconf -n # display non-defaults
 
-Open /etc/postfix/main.cf and take a look. First, back it it
+Open `/etc/postfix/main.cf` and take a look. First, back it it
 
     cp main.cf main.cf.$(date +%F)
 
@@ -36,11 +37,11 @@ Edit zone file for domain (eg lab.named)
 
     lab.example.com. MX 10 mail.lab.example.com
 
-Restart named and check with dig
+Restart named and check with `dig`
 
 Configure postfix
 
-    postconf -e ‘mydestination=localhost,$mydomain’
+    postconf -e 'mydestination=localhost,$mydomain'
 
     postconf -e ‘myorigin=$mydomain’
 
@@ -60,7 +61,7 @@ On client systems:
 
     systemctl restart postfix
 
-Install mailx on clients for testing.
+Install `mailx` on clients for testing.
 
 On the mail server
 
@@ -74,30 +75,29 @@ On the mail server
 
     vi dovecot.conf
 
-Enable protocols and listen elements.
+Enable protocols and listen elements in `/etc/dovecot/conf.d`
 
-    cd conf.d
-
-Edit auth.conf
-
-    disable_plaintext_auth = no
-    auth_mechanisms = plain login
-
-Edit mail.conf
-
-    mail_access_groups = mail
-
-Edit master.conf
-
-    unix_listener /var/spool/postfix/private/auth {
+1. Edit `auth.conf`
+````    
+disable_plaintext_auth = no
+auth_mechanisms = plain login
+````
+1. Edit `mail.conf`
+````
+mail_access_groups = mail
+````
+1. Edit `master.conf`
+````
+unix_listener /var/spool/postfix/private/auth {
     mode = 0667
     user= postfix
     group = postfix
-    }
-    
-Edit 10-ssl.conf to configure SSL.
+}
+````    
 
-Start the service
+Note: Edit `10-ssl.conf` to configure SSL.
+
+Start the service:
 
     systemctl start dovecot
 
@@ -109,11 +109,11 @@ To connect to another system, create ~/.muttrc with
 
     set spoolfile=“imap://user@mail.lab.example.com”
 
-Then run mutt
+Then run `mutt`
 
 ## Email aliases
 
-Check /etc/aliases
+Check `/etc/aliases`
 
-Run newaliases when changed.
+Run `newaliases` when changed.
 

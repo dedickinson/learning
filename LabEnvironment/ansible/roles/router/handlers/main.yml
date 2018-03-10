@@ -22,6 +22,9 @@
 - name: reload firewalld
   command: firewall-cmd --reload
 
+- name: reload sysctl
+  command: sysctl -p
+
 - name: restart squid
   service:
     name: squid

@@ -4,6 +4,7 @@
     firewall-cmd --permanent --new-zone=lab-public
     firewall-cmd --permanent --new-zone=lab-nat
     firewall-cmd --permanent --new-zone=lab-internal
+    firewall-cmd --permanent --new-zone=lab-dmz
     firewall-cmd --permanent --new-zone=lab-hostonlyif
     firewall-cmd --reload
 
@@ -48,7 +49,7 @@
     interface: enp0s16
     permanent: yes
     immediate: yes
-    zone: lab-internal
+    zone: lab-dmz
     state: enabled
   notify: reload firewalld
 
