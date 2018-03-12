@@ -1,5 +1,7 @@
 # CIFS/Samba shares
 
+NOT COMPLETE
+
 ## Setup the server
 
 ### Install
