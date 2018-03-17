@@ -23,7 +23,7 @@ The DNS server is a caching only server answering on `127.0.0.1`
 
 ## Configuration
 
-Edit /etc/named.conf
+Edit `/etc/named.conf`
 
 - `listen-on` sets the port and the host address
 - `allow-query sets` which hosts can query and can accept a cidr address and “localnets”

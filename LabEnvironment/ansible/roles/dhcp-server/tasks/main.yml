@@ -9,7 +9,7 @@
     src: files/etc/dhcp/dhcpd.conf
     dest: /etc/dhcp/dhcpd.conf
     owner: root
-    group: squid
+    group: root
     mode: 0640
   notify: "restart dhcp"
 

@@ -4,11 +4,11 @@ To reinstall: `grub2-install /dev/sda`
 
 ## Using grubby
 
-* grubby —default-kernel
-* grubby —set-default /boot/<kernel>
-* grubby —info=all
-* grubby —info /boot/<kernel>
-* grubby —remove-args=“rhgb quiet” —update-kernel /boot/<kernel>
+    grubby —default-kernel
+    grubby —set-default /boot/<kernel>
+    grubby —info=all
+    grubby —info /boot/<kernel>
+    grubby —remove-args=“rhgb quiet” —update-kernel /boot/<kernel>
 
 ## GRUB2 defaults
 
@@ -53,7 +53,7 @@ If you try to edit the menu at boot, you’ll need a password
 
 To encrypt a password:
 
-grub2-mkpasswd-pbkdf2
+    grub2-mkpasswd-pbkdf2
 
 Copy the hashed password and edit the users file:
 

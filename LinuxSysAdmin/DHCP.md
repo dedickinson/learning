@@ -23,7 +23,7 @@ Config `/etc/dhcp/dhcpd.conf`
 
     subnet 192.168.56.0 netmask 255.255.255.0 {
         range 192.168.56.151 192.168.56.254;
-}
+    }
 
     host server2 {
         hardware ethernet <macaddr>;

@@ -124,7 +124,7 @@ Yum installs the service (eg httpd) but it needs to be started and enabled:
     facter
     facter | grep hostname
     
-## Puppet manifests
+### Puppet manifests
 
     /etc/puppet
 
