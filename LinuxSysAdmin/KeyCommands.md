@@ -1,9 +1,78 @@
 # Key Commands
 
-## TO ADD
+## General
 
-- lspci
-- lscpu
+Command     | Description
+------------|------------------------
+`man -k iscsi` | Searches short descriptions
+`man -K iscsi` | Full search
+`find /usr/share/doc -type f -name *.html` | Find all HTML files in the dir
+`grep volume README` | Searches for the word "volume" in the README file
+`grep -i volume README` | Case-insensitive search for the word "volume" in the README file
+`diff README README.2` | Diff two files
+`wdiff README README.2` | Diff two files
+
+### Process management
+
+Command     | Description
+------------|------------------------
+`kill -l`   | Lists all kill signals
+`ps -F -p $(pgrep sshd)` | Process details for sshd
+`pmap 1404` | Memory map of the requested process
+`pgrep fail2ban` | Get process ID for specified term
+`pkill sleep` | Kill all `sleep` processes
+`nice`  | Current process's priority
+`ps -l` | Lists processes and their priority
+`nice -n 19 sleep 1000` | Starts a low-priority process
+`renice -n 0 1393` | Changes the priority of an existing process
+`renice -n 10 $(pgrep sleep)` | Changes the priority of an existing process
+
+Notes:
+
+- Nice value range: -20 (high) to +19 (low)
+- Regular users can only use nice values >=0
+- Default priority set in `/etc/security/limits.conf`
+
+### Resource management
+
+Command     | Description
+------------|------------------------
+`top`       | Activity monitor
+`free`      | Memory resources
+`pwdx $(pgrep squid)` | Working directory for the process (from `/proc/<id>/cwd`)
+`uptime` | System uptime
+`cat /proc/loadavg` | Load average
+`lscpu` | Lists the CPUs in the system
+`vmstat` | Virtual memory stats
+`iostat -m 5 3` | CPU and IO stats
+`pidstat -p 1614 5 3` | Stats for a specific process
+`mpstat 5 3` | Per-CPU stats
+
+#### sysstat
+
+Package: `sysstat`
+Configuration: `/etc/sysconfig/sysstat`
+
+Command     | Description
+------------|------------------------
+`sar` | `sysstat` reporting tool
+`sar -A` | All stats
+`sar -n ALL` | All networking stats
+`sar -s 14:50:00 -e 15:10:00` | Limit to a time period
+
+Notes:
+
+-`/etc/cron.d/sysstat` is created to compile reports
+
+### Shared libraries
+
+Command     | Description
+------------|------------------------
+`ldd /usr/bin/ls` | Lists the shared libraries used by the `ls` command
+`ldconfig -p`     | Display the linker cache
+
+Add new library locations to a file in `/etc/ld.so.conf.d` or add to 
+`$LD_LIBRARY_PATH`
 
 ## Users and Groups
 
