@@ -32,6 +32,7 @@ Notes:
 - Nice value range: -20 (high) to +19 (low)
 - Regular users can only use nice values >=0
 - Default priority set in `/etc/security/limits.conf`
+    - Set in `/etc/security/limits.d/`
 
 ### Resource management
 
@@ -48,7 +49,7 @@ Command     | Description
 `pidstat -p 1614 5 3` | Stats for a specific process
 `mpstat 5 3` | Per-CPU stats
 
-#### sysstat
+#### `sysstat`
 
 Package: `sysstat`
 Configuration: `/etc/sysconfig/sysstat`
@@ -62,7 +63,19 @@ Command     | Description
 
 Notes:
 
--`/etc/cron.d/sysstat` is created to compile reports
+- `/etc/cron.d/sysstat` is created to compile reports
+
+### Scheduling tasks
+
+- `cron`: Schedules jobs
+    - Configuration: `/etc/crontab`
+- `anacron`: Handles systems not running 24x7
+    - Configuration: `/etc/anacrontab`
+- `at`: Used for one-off jobs and batches
+    - `atq` - lists queued jobs
+    - `atrm` - removes a job
+
+
 
 ### Shared libraries
 
@@ -109,8 +122,7 @@ Command     | Description
     - `/etc/profile`
     - `/etc/profile.d`
     - `~/.bash_profile
-- `bashrc` scripts are executed for interactive non-login shells. The `profile` 
-scripts will generally call `bashrc` scripts.
+- `bashrc` scripts are executed for interactive non-login shells. The `profile` scripts will generally call `bashrc` scripts.
     - `/etc/bashrc`
     - `~/.bashrc`
 - `logout` scripts are executed at logout
@@ -211,7 +223,48 @@ To change at boot time:
 1. Login as `root`
 1. If you need to edit anything: `mount -o remount,rw /`
 
-## Firewall
+## Networking
+
+Configuration: 
+
+* `/etc/sysconfig/network-scripts/`
+* `/etc/hosts` - local static lookups
+* `/etc/hostname` - the hostname
+* `/etc/nsswitch.conf` - name service switching
+* `/etc/resolv.conf`- resolver config
+
+Command     | Description
+------------|------------------------
+`hostnamectl` | Current hostname
+`hostnamectl set-hostname router.lab.example.com` | Set hostname
+`ip a s` | IP details for all network devices
+`ip a s enp0s3` | IP details for the specified network device
+`ip link show enp0s3` | Device info
+`ethtool enp0s3` | Network driver info
+`ls /sys/class/net/` | Lists all networking devices
+`netstat -t` | All active connections
+`netstat -tulpn` | Lists all ports and backing processes
+`watch -n 5 -x netstat --interfaces` | Handy network activity monitor
+`nmap router.lab.example.com` | Port scanner
+`iptables --list` | Lists all rules for all chains
+
+### Networking config
+
+Command     | Description
+------------|------------------------
+`ip addr add 172.17.67.3/16 dev enp0s8` | Temporarily add the IP address
+
+#### IP Forwarding
+
+To enable IP Forwarding edit `/etc/sysctl.conf` to feature:
+
+    net.ipv4.ip_forward = 1
+
+Load the changes with:
+
+    sysctl -p
+
+### Firewall
 
 Command     | Description
 ------------|------------------------
@@ -222,6 +275,27 @@ Command     | Description
 `firewall-cmd --list-all --zone=lab-internal` | Get details on a zone
 `firewall-cmd --add-service=ssh --permanent --zone=lab-internal` | Adds the `SSH` service to the firewall
 
+Advanced language help: `man 5 firewalld.richlanguage`
+
+#### IP Masquerading
+
+    firewall-cmd --zone=external --add-masquerade --permanent --zone=lab-dmz
+    firewall-cmd --reload
+
+    #Check:
+    firewall-cmd --permanent --query-masquerade --zone=lab-dmz
+
+Note: This will also configure IP Forwarding
+
+#### Port forwarding
+
+    firewall-cmd --permanent --zone=lab-dmz --add-forward-port=port=80:proto=tcp:toaddr=172.16.100.50:toport=8080
+
+#### Tunnels
+
+Listen locally on 2222 and tunnels to `172.16.1.50`, then calling into port 22:
+
+    ssh -f -L 2222:localhost:22 ansible@172.16.1.50 -N
 
 ## DHCP
 
@@ -403,6 +477,22 @@ Set the following to `yes` and `systemctl reload sshd`:
 Then:
 
     authconfig --enablekrb5 --update
+
+## Filesystem management
+
+### ACLs
+
+Command     | Description
+------------|------------------------
+`getfacl test.txt` | List ACLs
+`setfacl -m u:puffin:r test.txt` | Grant read to the `puffin` user
+`setfacl -m g:birds:rw test.txt` | Grant read/write to the `birds` group
+`setfacl -x g:birds test.txt` | Removes access from the `birds` group
+`setfacl -b test.txt` | Removes all ACLs
+
+## SELinux
+
+TODO
 
 ## Storage management
 
