@@ -643,6 +643,42 @@ To disconnect:
 
     iscsiadm -m node -T iqn.2018-03.com.example.lab.router:media -u
 
+### NFS
+
+Packages: `nfs-utils`
+Configuration: `/etc/exports/`
+Services:
+    - `nfs-server`
+    - `rpcbind`
+
+Sample `/etc/exports/` entry:
+
+    /share/nfs *(ro)
+
+Export shares using:
+
+    exportfs -r
+
+Mount the share:
+
+    mount -t nfs server2.lab.example.com:/share/nfs /mnt
+
+### AutoFS
+
+Package: `autofs`
+Configuration: `/etc/auto.misc`
+
+Add an automount to `/etc/auto.misc`:
+
+    nfsshare        -ro,soft,intr           server1.lab.example.com:/share/nfs
+
+This will appear in `/misc/nfsshare`
+
+
+###CIFS
+
+
+
 ## GRUB
 
 - Configuration:
@@ -658,3 +694,48 @@ Command     | Description
 `grubby --info /boot/<kernel>` | get info about a specific kernel
 `grubby --remove-args=“rhgb quiet” —update-kernel /boot/<kernel>` | Change a kernel arg
 `grub2-mkconfig -o /boot/grub2/grub.cfg` | Used when changing config files outside `grubby`
+
+## PXE Boot
+
+Packages: `syslinux tftp tftp-server`
+
+Copy across files:
+
+    cp /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot/
+    cp /usr/share/syslinux/menu.c32 /var/lib/tftpboot/
+
+From, the ISO, also copy `vmlinuz` and `initrd.img`
+
+Start the tftp server
+
+    systemctl start tftp.socket
+    systemctl enable tftp.socket
+
+### DHCP
+
+Edit `/etc/dhcp/dhcp.conf` and in the subnet config, add:
+
+    next-server <ip of pxe server>;
+    filename “pxelinux.0”;
+
+Test the config and restart:
+
+    dhcpd -t -cf /etc/dhcp/dhcp.conf
+    systemctl restart dhcpd
+
+### PXE Boot menu
+
+Configuration file: `/var/lib/tftpboot/pxelinux.cfg/default`
+
+Example:
+
+    default menu.32
+    prompt 0
+    timeout  1000
+    ontimeout local
+
+    menu title Boot menu
+ 
+    label local
+        menu Boot from local disk
+        LOCALBOOT 0
