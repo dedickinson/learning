@@ -1,5 +1,7 @@
 # Key Commands
 
+{{TOC}}
+
 ## General
 
 Command     | Description
@@ -75,8 +77,6 @@ Notes:
     - `atq` - lists queued jobs
     - `atrm` - removes a job
 
-
-
 ### Shared libraries
 
 Command     | Description
@@ -86,6 +86,46 @@ Command     | Description
 
 Add new library locations to a file in `/etc/ld.so.conf.d` or add to 
 `$LD_LIBRARY_PATH`
+
+### Logging
+
+Configuration:
+
+- `/etc/rsyslog.conf`
+- `/etc/rsyslog.d`
+
+#### Configure a logging server
+
+Enable SELinux and the firewall for syslog to listen on port 10514:
+
+    semanage port -a -t syslogd_port_t -p tcp 10514
+    semanage port -l|grep syslogd
+    firewall-cmd --zone=lab-internal --add-port=10514/tcp --permanent
+    firewall-cmd --reload
+
+Configure the port in `/etc/rsyslog.conf` by including the following line:
+
+    $template TmplAuthpriv, "/var/log/remote/auth/%HOSTNAME%/%PROGRAMNAME:::secpath-replace%.log"
+    $template TmplMsg, "/var/log/remote/msg/%HOSTNAME%/%PROGRAMNAME:::secpath-replace%.log"
+
+    $ModLoad imtcp
+
+    # Adding this ruleset to process remote messages
+    $RuleSet remote1
+    authpriv.*   ?TmplAuthpriv
+    *.info;mail.none;authpriv.none;cron.none   ?TmplMsg
+    $RuleSet RSYSLOG_DefaultRuleset   #End the rule set by switching back to the default rule set
+    $InputTCPServerBindRuleset remote1  #Define a new input and bind it to the "remote1" rule set
+
+    $InputTCPServerRun 10514
+
+Restart `rsyslog`
+
+#### Configure the client
+
+Configure the logserver in `/etc/rsyslog.conf` by including the following line:
+
+    *.* @@172.16.1.1:10514
 
 ## Users and Groups
 
@@ -114,14 +154,14 @@ Command     | Description
 `userdel`   | Delete a user
 `groupadd`  | Create a group
 `chsh`      | Change user shell
-`chmod g+s <file|dir>` | Set the Group ID (SGID)
+``chmod g+s <file/dir>`` | Set the Group ID (SGID)
 
 ### Shell and login scripts
 
 - `profile` scripts are used at login and should include environment settings.
     - `/etc/profile`
     - `/etc/profile.d`
-    - `~/.bash_profile
+    - `~/.bash_profile`
 - `bashrc` scripts are executed for interactive non-login shells. The `profile` scripts will generally call `bashrc` scripts.
     - `/etc/bashrc`
     - `~/.bashrc`
@@ -492,7 +532,73 @@ Command     | Description
 
 ## SELinux
 
-TODO
+Configuration: 
+
+- `/etc/selinux/config`
+- `/etc/selinux/targeted/contexts/`
+
+Packages:
+
+- `setools`
+- `setools-console`
+- `policycoreutils-python`
+- `setroubleshoot`
+- `selinux-policy-doc`
+
+Command     | Description
+------------|------------------------
+`ls -Z`     | List files with their SELinux context
+`ls -dZ /var/spool/squid` | Directory context
+`ps axZ`    | List processes with their SELinux context
+`id -Z`     | User context
+`sestatus`  | SELinux status
+`getenforce`| SELinux mode
+`setenforce 0`| Set to permissive
+`seinfo`    | Policy query
+`ausearch -m avc` | SELinux alerts in the audit log
+
+### Manage policies and contexts
+
+Command     | Description
+------------|------------------------
+`chcon`     | Changes a file's security context - only lasts until next restore
+`restorecon`| Restores a file's context to the default
+`getsebool -a` | Lists all boolean config
+`setsebool -P samba_export_all_rw 1` | Enables Samba to read/write all files
+`semanage port -l` | Port mappings
+`semanage permissive -a smbd_t` | Sets the `smbd_t` process type to be permissive
+
+### Example of configuring SELinux for Squid
+
+Audit log revealed an issue in permissive mode:
+
+````
+time->Sat Mar 24 14:18:27 2018
+type=PROCTITLE msg=audit(1521865107.759:118): proctitle=2873717569642D3129002D66002F6574632F73717569642F73717569642E636F6E66
+type=SYSCALL msg=audit(1521865107.759:118): arch=c000003e syscall=2 success=yes exit=18 a0=55c2f9f7ce40 a1=641 a2=1a4 a3=64697571732f6c6f items=0 ppid=1603 pid=1605 auid=4294967295 uid=23 gid=23 euid=23 suid=0 fsuid=23 egid=23 sgid=23 fsgid=23 tty=(none) ses=4294967295 comm="squid" exe="/usr/sbin/squid" subj=system_u:system_r:squid_t:s0 key=(null)
+type=AVC msg=audit(1521865107.759:118): avc:  denied  { append open } for  pid=1605 comm="squid" path="/var/spool/squid/00/00/000000E5" dev="dm-1" ino=8766949 scontext=system_u:system_r:squid_t:s0 tcontext=system_u:object_r:unlabeled_t:s0 tclass=file
+type=AVC msg=audit(1521865107.759:118): avc:  denied  { create } for  pid=1605 comm="squid" name="000000E5" scontext=system_u:system_r:squid_t:s0 tcontext=system_u:object_r:unlabeled_t:s0 tclass=file
+````
+
+Note that the service context (`scontext=system_u:system_r:squid_t:s0`) was trying to access the type context (`tcontext=system_u:object_r:unlabeled_t:s0 tclass=file`).
+
+Some checks:
+
+- Check the squid process with `axZ|grep squid`
+- The `getsebool squid_connect_any` command indicates squid can connect to any port.
+- Check the cache dir with `ls -dZ /var/spool/squid`
+- Look at the file contexts for squid: `semanage fcontext --list|grep squid`
+- `man squid_selinux` indicated that `squid_cache_t` is used for cache files
+
+Configure the context:
+
+    semanage fcontext -a -t squid_cache_t "/var/spool/squid(/.*)?"
+    restorecon -R -v /var/spool/squid
+    systemctl restart squid
+
+The new entry is in `cat /etc/selinux/targeted/contexts/files/file_contexts.local`
+
+I could have used `semanage permissive -a squid_t` but I wanted to be specific.
 
 ## Storage management
 
@@ -666,6 +772,7 @@ Mount the share:
 ### AutoFS
 
 Package: `autofs`
+
 Configuration: `/etc/auto.misc`
 
 Add an automount to `/etc/auto.misc`:
@@ -675,9 +782,42 @@ Add an automount to `/etc/auto.misc`:
 This will appear in `/misc/nfsshare`
 
 
-###CIFS
+### CIFS
 
+Package: `samba`
 
+Prepare a share directory:
+
+    mkdir -m 1777 /share
+
+Setup the share in `/etc/samba/smb.conf`:
+
+    [share]
+    path=/share
+    writable=yes
+
+Prep the password with `smbpasswd -a root`
+
+SELinux config:
+
+    semanage fcontext -a -t samba_share_t '/share(/.*)?'
+    restorecon -R /share
+
+Firewall:
+
+    firewall-cmd --add-service=samba --permanent
+    firewall-cmd --reload
+
+Connect: `smbclient //localhost/share`
+
+Mount the share:
+
+    yum install cifs-utils
+    mount.cifs //172.16.1.50/share /mnt
+
+Or use autofs with an `/etc/auto.misc` entry:
+
+    samba   -fstype=cifs,rw,noperm,user=root,password=PASSWORD ://172.16.1.50/share
 
 ## GRUB
 
@@ -739,3 +879,17 @@ Example:
     label local
         menu Boot from local disk
         LOCALBOOT 0
+
+## Services
+
+### FTP
+
+Package: `vsftpd`
+
+Configuration: `/etc/vsftpd/vsftpd.conf`
+
+### MariaDB
+
+Package: `mariadb-server`
+
+### HTTP
