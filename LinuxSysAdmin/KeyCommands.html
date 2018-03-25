@@ -1,0 +1,1745 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/2.10.0/github-markdown.min.css" />
+	</head>
+<body>
+<h1 id="keycommands">Key Commands</h1>
+
+<div class="TOC">
+
+<ul>
+<li><a href="#keycommands">Key Commands</a>
+<ul>
+<li><a href="#general">General</a>
+<ul>
+<li><a href="#processmanagement">Process management</a></li>
+<li><a href="#resourcemanagement">Resource management</a>
+<ul>
+<li><a href="#sysstat"><code>sysstat</code></a></li>
+</ul>
+</li>
+<li><a href="#schedulingtasks">Scheduling tasks</a></li>
+<li><a href="#sharedlibraries">Shared libraries</a></li>
+</ul>
+</li>
+<li><a href="#usersandgroups">Users and Groups</a>
+<ul>
+<li><a href="#primaryfiles">Primary files</a></li>
+<li><a href="#commands">Commands</a></li>
+<li><a href="#shellandloginscripts">Shell and login scripts</a></li>
+<li><a href="#pam">PAM</a></li>
+</ul>
+</li>
+<li><a href="#packagemanagement">Package management</a>
+<ul>
+<li><a href="#sourcepackages">Source packages</a></li>
+</ul>
+</li>
+<li><a href="#dateandtime">Date and time</a>
+<ul>
+<li><a href="#chrony">Chrony</a></li>
+</ul>
+</li>
+<li><a href="#systemdmanagement">Systemd management</a>
+<ul>
+<li><a href="#services">Services</a></li>
+<li><a href="#runlevelstargets">Run levels/targets</a></li>
+</ul>
+</li>
+<li><a href="#networking">Networking</a>
+<ul>
+<li><a href="#networkingconfig">Networking config</a>
+<ul>
+<li><a href="#ipforwarding">IP Forwarding</a></li>
+</ul>
+</li>
+<li><a href="#firewall">Firewall</a>
+<ul>
+<li><a href="#ipmasquerading">IP Masquerading</a></li>
+<li><a href="#portforwarding">Port forwarding</a></li>
+<li><a href="#tunnels">Tunnels</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#dhcp">DHCP</a>
+<ul>
+<li><a href="#client">Client</a></li>
+<li><a href="#server">Server</a></li>
+</ul>
+</li>
+<li><a href="#dns">DNS</a>
+<ul>
+<li><a href="#client">Client</a></li>
+<li><a href="#server">Server</a>
+<ul>
+<li><a href="#options">Options</a></li>
+<li><a href="#createaforwardlookupzone">Create a forward lookup zone</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#ldap">LDAP</a>
+<ul>
+<li><a href="#client">Client</a></li>
+</ul>
+</li>
+<li><a href="#kerberos">Kerberos</a>
+<ul>
+<li><a href="#server">Server</a></li>
+<li><a href="#client">Client</a></li>
+<li><a href="#enableinssh">Enable in SSH</a></li>
+</ul>
+</li>
+<li><a href="#filesystemmanagement">Filesystem management</a>
+<ul>
+<li><a href="#acls">ACLs</a></li>
+</ul>
+</li>
+<li><a href="#selinux">SELinux</a></li>
+<li><a href="#storagemanagement">Storage management</a>
+<ul>
+<li><a href="#mountingafilesystem">Mounting a filesystem</a></li>
+<li><a href="#fstab">fstab</a></li>
+<li><a href="#storagedevices">Storage devices</a></li>
+<li><a href="#partitioning">Partitioning</a></li>
+<li><a href="#xfs">XFS</a></li>
+<li><a href="#systemstoragemanager">System Storage manager</a></li>
+<li><a href="#raid">RAID</a></li>
+<li><a href="#iscsiblockstorageserver">iSCSI block storage server</a>
+<ul>
+<li><a href="#server">Server</a></li>
+<li><a href="#client">Client</a></li>
+</ul>
+</li>
+<li><a href="#nfs">NFS</a></li>
+<li><a href="#autofs">AutoFS</a></li>
+</ul>
+</li>
+<li><a href="#grub">GRUB</a></li>
+<li><a href="#pxeboot">PXE Boot</a>
+<ul>
+<li><a href="#dhcp">DHCP</a></li>
+<li><a href="#pxebootmenu">PXE Boot menu</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<h2 id="general">General</h2>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>man -k iscsi</code> </td>
+	<td> Searches short descriptions</td>
+</tr>
+<tr>
+	<td><code>man -K iscsi</code> </td>
+	<td> Full search</td>
+</tr>
+<tr>
+	<td><code>find /usr/share/doc -type f -name *.html</code> </td>
+	<td> Find all HTML files in the dir</td>
+</tr>
+<tr>
+	<td><code>grep volume README</code> </td>
+	<td> Searches for the word &#8220;volume&#8221; in the README file</td>
+</tr>
+<tr>
+	<td><code>grep -i volume README</code> </td>
+	<td> Case-insensitive search for the word &#8220;volume&#8221; in the README file</td>
+</tr>
+<tr>
+	<td><code>diff README README.2</code> </td>
+	<td> Diff two files</td>
+</tr>
+<tr>
+	<td><code>wdiff README README.2</code> </td>
+	<td> Diff two files</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="processmanagement">Process management</h3>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>kill -l</code> </td>
+	<td> Lists all kill signals</td>
+</tr>
+<tr>
+	<td><code>ps -F -p $(pgrep sshd)</code> </td>
+	<td> Process details for sshd</td>
+</tr>
+<tr>
+	<td><code>pmap 1404</code> </td>
+	<td> Memory map of the requested process</td>
+</tr>
+<tr>
+	<td><code>pgrep fail2ban</code> </td>
+	<td> Get process ID for specified term</td>
+</tr>
+<tr>
+	<td><code>pkill sleep</code> </td>
+	<td> Kill all <code>sleep</code> processes</td>
+</tr>
+<tr>
+	<td><code>nice</code> </td>
+	<td> Current process&#8217;s priority</td>
+</tr>
+<tr>
+	<td><code>ps -l</code> </td>
+	<td> Lists processes and their priority</td>
+</tr>
+<tr>
+	<td><code>nice -n 19 sleep 1000</code> </td>
+	<td> Starts a low-priority process</td>
+</tr>
+<tr>
+	<td><code>renice -n 0 1393</code> </td>
+	<td> Changes the priority of an existing process</td>
+</tr>
+<tr>
+	<td><code>renice -n 10 $(pgrep sleep)</code> </td>
+	<td> Changes the priority of an existing process</td>
+</tr>
+</tbody>
+</table>
+
+<p>Notes:</p>
+
+<ul>
+<li>Nice value range: -20 (high) to +19 (low)</li>
+<li>Regular users can only use nice values &gt;=0</li>
+<li>Default priority set in <code>/etc/security/limits.conf</code>
+
+<ul>
+<li>Set in <code>/etc/security/limits.d/</code></li>
+</ul></li>
+</ul>
+
+<h3 id="resourcemanagement">Resource management</h3>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>top</code>  </td>
+	<td> Activity monitor</td>
+</tr>
+<tr>
+	<td><code>free</code>  </td>
+	<td> Memory resources</td>
+</tr>
+<tr>
+	<td><code>pwdx $(pgrep squid)</code> </td>
+	<td> Working directory for the process (from <code>/proc/&lt;id&gt;/cwd</code>)</td>
+</tr>
+<tr>
+	<td><code>uptime</code> </td>
+	<td> System uptime</td>
+</tr>
+<tr>
+	<td><code>cat /proc/loadavg</code> </td>
+	<td> Load average</td>
+</tr>
+<tr>
+	<td><code>lscpu</code> </td>
+	<td> Lists the CPUs in the system</td>
+</tr>
+<tr>
+	<td><code>vmstat</code> </td>
+	<td> Virtual memory stats</td>
+</tr>
+<tr>
+	<td><code>iostat -m 5 3</code> </td>
+	<td> CPU and IO stats</td>
+</tr>
+<tr>
+	<td><code>pidstat -p 1614 5 3</code> </td>
+	<td> Stats for a specific process</td>
+</tr>
+<tr>
+	<td><code>mpstat 5 3</code> </td>
+	<td> Per-CPU stats</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="sysstat"><code>sysstat</code></h4>
+
+<p>Package: <code>sysstat</code>
+Configuration: <code>/etc/sysconfig/sysstat</code></p>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>sar</code> </td>
+	<td> <code>sysstat</code> reporting tool</td>
+</tr>
+<tr>
+	<td><code>sar -A</code> </td>
+	<td> All stats</td>
+</tr>
+<tr>
+	<td><code>sar -n ALL</code> </td>
+	<td> All networking stats</td>
+</tr>
+<tr>
+	<td><code>sar -s 14:50:00 -e 15:10:00</code> </td>
+	<td> Limit to a time period</td>
+</tr>
+</tbody>
+</table>
+
+<p>Notes:</p>
+
+<ul>
+<li><code>/etc/cron.d/sysstat</code> is created to compile reports</li>
+</ul>
+
+<h3 id="schedulingtasks">Scheduling tasks</h3>
+
+<ul>
+<li><code>cron</code>: Schedules jobs
+
+<ul>
+<li>Configuration: <code>/etc/crontab</code></li>
+</ul></li>
+<li><code>anacron</code>: Handles systems not running 24x7
+
+<ul>
+<li>Configuration: <code>/etc/anacrontab</code></li>
+</ul></li>
+<li><code>at</code>: Used for one-off jobs and batches
+
+<ul>
+<li><code>atq</code> - lists queued jobs</li>
+<li><code>atrm</code> - removes a job</li>
+</ul></li>
+</ul>
+
+<h3 id="sharedlibraries">Shared libraries</h3>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>ldd /usr/bin/ls</code> </td>
+	<td> Lists the shared libraries used by the <code>ls</code> command</td>
+</tr>
+<tr>
+	<td><code>ldconfig -p</code>  </td>
+	<td> Display the linker cache</td>
+</tr>
+</tbody>
+</table>
+
+<p>Add new library locations to a file in <code>/etc/ld.so.conf.d</code> or add to
+<code>$LD_LIBRARY_PATH</code></p>
+
+<h2 id="usersandgroups">Users and Groups</h2>
+
+<h3 id="primaryfiles">Primary files</h3>
+
+<ul>
+<li><code>/etc/passwd</code> - local users</li>
+<li><code>/etc/shadow</code> - local user passwords</li>
+<li><code>/etc/group</code> - local groups</li>
+<li><code>/etc/gshadow</code> - local group passwords</li>
+<li><code>/etc/nsswitch.conf</code> - Name Service Switch config file</li>
+<li><code>/etc/profile.d/</code> - profile scripts</li>
+<li><code>/etc/skel</code> - Home directory template</li>
+<li><code>/etc/login.defs</code> - Login defaults such as password config</li>
+<li><code>/etc/default/useradd</code> - Defaults for new users</li>
+</ul>
+
+<h3 id="commands">Commands</h3>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>getent</code> </td>
+	<td> Gets entries from the administrative database</td>
+</tr>
+<tr>
+	<td><code>getent passwd penguin</code> </td>
+	<td> <code>passwd</code> entry for the requested user</td>
+</tr>
+<tr>
+	<td><code>id</code>  </td>
+	<td> Info about current user</td>
+</tr>
+<tr>
+	<td><code>id penguin</code> </td>
+	<td> Info about specified user</td>
+</tr>
+<tr>
+	<td><code>useradd</code> </td>
+	<td> Create a user</td>
+</tr>
+<tr>
+	<td><code>usermod</code> </td>
+	<td> Modify a user</td>
+</tr>
+<tr>
+	<td><code>userdel</code> </td>
+	<td> Delete a user</td>
+</tr>
+<tr>
+	<td><code>groupadd</code> </td>
+	<td> Create a group</td>
+</tr>
+<tr>
+	<td><code>chsh</code>  </td>
+	<td> Change user shell</td>
+</tr>
+<tr>
+	<td>`chmod g+s &lt;file</td>
+	<td>dir&gt;` </td>
+	<td> Set the Group ID (SGID)</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="shellandloginscripts">Shell and login scripts</h3>
+
+<ul>
+<li><code>profile</code> scripts are used at login and should include environment settings.
+
+<ul>
+<li><code>/etc/profile</code></li>
+<li><code>/etc/profile.d</code></li>
+<li>`~/.bash_profile</li>
+</ul></li>
+<li><code>bashrc</code> scripts are executed for interactive non-login shells. The <code>profile</code> scripts will generally call <code>bashrc</code> scripts.
+
+<ul>
+<li><code>/etc/bashrc</code></li>
+<li><code>~/.bashrc</code></li>
+</ul></li>
+<li><code>logout</code> scripts are executed at logout
+
+<ul>
+<li><code>~/.bash_logout</code></li>
+</ul></li>
+</ul>
+
+<h3 id="pam">PAM</h3>
+
+<p>Configuration:</p>
+
+<ul>
+<li><code>/etc/pam.d/</code></li>
+<li><code>/etc/security/</code>
+
+<ul>
+<li>Password quality: <code>/etc/security/pwquality.conf</code></li>
+<li>Limit resource access (<code>ulimit</code>): <code>/etc/security/limits.conf</code></li>
+</ul></li>
+</ul>
+
+<p>Various PAM modules are available in <code>/lib64/security</code></p>
+
+<p>Can use <code>authconfig</code>:</p>
+
+<pre><code>authconfig --savebackup=/backups/authconfigbackup20170701
+
+authconfig --passminlen=9 --passminclass=3 --passmaxrepeat=2 --passmaxclassrepeat=2 --enablerequpper --enablereqother --update
+</code></pre>
+
+<h2 id="packagemanagement">Package management</h2>
+
+<ul>
+<li>Yum repositories: <code>/etc/yum.repos.d</code></li>
+<li>Cache: <code>/var/cache/yum/</code></li>
+</ul>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>rpm -V nmap</code> </td>
+	<td> Verify a package</td>
+</tr>
+<tr>
+	<td><code>rpm -qf /etc/hosts</code> </td>
+	<td> Query the package that installed a resource</td>
+</tr>
+<tr>
+	<td><code>yum repolist</code>  </td>
+	<td> List Yum repos</td>
+</tr>
+<tr>
+	<td><code>yum list installed</code> </td>
+	<td> List all installed packages</td>
+</tr>
+<tr>
+	<td><code>yum whatprovides lsof</code> </td>
+	<td> Lists the package providing a file/app (e.g. <code>lsof</code>)</td>
+</tr>
+<tr>
+	<td><code>yum update kernel</code>  </td>
+	<td> Update the kernel</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="sourcepackages">Source packages</h3>
+
+<p>Download and compile from source:</p>
+
+<pre><code class="bash">yum install yum-utils ncurses-devel bzip2 gcc
+yumdownloader --source zsh
+cd rpmbuild/SOURCES/
+tar -xjf zsh-5.0.2.tar.bz2
+cd zsh-5.0.2/
+./configure
+make
+make install
+</code></pre>
+
+<h2 id="dateandtime">Date and time</h2>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>timedatectl</code> </td>
+	<td> Get current date/time info</td>
+</tr>
+<tr>
+	<td><code>timedatectl list-timezones</code> </td>
+	<td> List all timezones</td>
+</tr>
+<tr>
+	<td><code>timedatectl set-timezone time_zone</code> </td>
+	<td> Set the timezone</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="chrony">Chrony</h3>
+
+<ul>
+<li>Package: <code>chrony</code></li>
+<li>Service: <code>chronyd</code></li>
+<li>Configuration: <code>/etc/chrony.conf</code>
+
+<ul>
+<li>Sample time server entry: <code>server 0.centos.pool.ntp.org iburst</code></li>
+</ul></li>
+</ul>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>chronyc</code>   </td>
+	<td> CLI for Chrony config</td>
+</tr>
+<tr>
+	<td><code>chronyc tracking</code> </td>
+	<td> Current time tracking stats</td>
+</tr>
+<tr>
+	<td><code>chronyc sources</code> </td>
+	<td> Details of time sources</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="systemdmanagement">Systemd management</h2>
+
+<h3 id="services">Services</h3>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>systemctl start httpd</code> </td>
+	<td> Start the service</td>
+</tr>
+<tr>
+	<td><code>systemctl stop httpd</code> </td>
+	<td> Stop the service</td>
+</tr>
+<tr>
+	<td><code>systemctl enable httpd</code> </td>
+	<td> Enable the service to start at boot</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="runlevelstargets">Run levels/targets</h3>
+
+<p>Now called <code>targets</code> in Systemd</p>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>runlevel</code> </td>
+	<td> Get the current run level</td>
+</tr>
+<tr>
+	<td><code>systemctl get-default</code> </td>
+	<td> Gets the default target</td>
+</tr>
+<tr>
+	<td><code>systemctl set-default multi-user.target</code> </td>
+	<td> Sets the default target</td>
+</tr>
+<tr>
+	<td><code>systemctl isolate rescue.target</code> </td>
+	<td> Changes the current run level</td>
+</tr>
+</tbody>
+</table>
+
+<p>To change at boot time:</p>
+
+<ol>
+<li>In the Grub menu, press <code>e</code> to edit</li>
+<li>At the end of the <code>Linux16</code> line, append <code>systemd.unit=rescue.target</code></li>
+<li>Login as <code>root</code></li>
+<li>If you need to edit anything: <code>mount -o remount,rw /</code></li>
+</ol>
+
+<h2 id="networking">Networking</h2>
+
+<p>Configuration:</p>
+
+<ul>
+<li><code>/etc/sysconfig/network-scripts/</code></li>
+<li><code>/etc/hosts</code> - local static lookups</li>
+<li><code>/etc/hostname</code> - the hostname</li>
+<li><code>/etc/nsswitch.conf</code> - name service switching</li>
+<li><code>/etc/resolv.conf</code>- resolver config</li>
+</ul>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>hostnamectl</code> </td>
+	<td> Current hostname</td>
+</tr>
+<tr>
+	<td><code>hostnamectl set-hostname router.lab.example.com</code> </td>
+	<td> Set hostname</td>
+</tr>
+<tr>
+	<td><code>ip a s</code> </td>
+	<td> IP details for all network devices</td>
+</tr>
+<tr>
+	<td><code>ip a s enp0s3</code> </td>
+	<td> IP details for the specified network device</td>
+</tr>
+<tr>
+	<td><code>ip link show enp0s3</code> </td>
+	<td> Device info</td>
+</tr>
+<tr>
+	<td><code>ethtool enp0s3</code> </td>
+	<td> Network driver info</td>
+</tr>
+<tr>
+	<td><code>ls /sys/class/net/</code> </td>
+	<td> Lists all networking devices</td>
+</tr>
+<tr>
+	<td><code>netstat -t</code> </td>
+	<td> All active connections</td>
+</tr>
+<tr>
+	<td><code>netstat -tulpn</code> </td>
+	<td> Lists all ports and backing processes</td>
+</tr>
+<tr>
+	<td><code>watch -n 5 -x netstat --interfaces</code> </td>
+	<td> Handy network activity monitor</td>
+</tr>
+<tr>
+	<td><code>nmap router.lab.example.com</code> </td>
+	<td> Port scanner</td>
+</tr>
+<tr>
+	<td><code>iptables --list</code> </td>
+	<td> Lists all rules for all chains</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="networkingconfig">Networking config</h3>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>ip addr add 172.17.67.3/16 dev enp0s8</code> </td>
+	<td> Temporarily add the IP address</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="ipforwarding">IP Forwarding</h4>
+
+<p>To enable IP Forwarding edit <code>/etc/sysctl.conf</code> to feature:</p>
+
+<pre><code>net.ipv4.ip_forward = 1
+</code></pre>
+
+<p>Load the changes with:</p>
+
+<pre><code>sysctl -p
+</code></pre>
+
+<h3 id="firewall">Firewall</h3>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>firewall-cmd --state</code> </td>
+	<td> Current firewall state</td>
+</tr>
+<tr>
+	<td><code>firewall-cmd --reload</code> </td>
+	<td> Sets config and reloads</td>
+</tr>
+<tr>
+	<td><code>firewall-cmd --get-services</code> </td>
+	<td> Lists all pre-canned services known to the firewall</td>
+</tr>
+<tr>
+	<td><code>firewall-cmd --get-zones</code> </td>
+	<td> Lists all defined zones</td>
+</tr>
+<tr>
+	<td><code>firewall-cmd --list-all --zone=lab-internal</code> </td>
+	<td> Get details on a zone</td>
+</tr>
+<tr>
+	<td><code>firewall-cmd --add-service=ssh --permanent --zone=lab-internal</code> </td>
+	<td> Adds the <code>SSH</code> service to the firewall</td>
+</tr>
+</tbody>
+</table>
+
+<p>Advanced language help: <code>man 5 firewalld.richlanguage</code></p>
+
+<h4 id="ipmasquerading">IP Masquerading</h4>
+
+<pre><code>firewall-cmd --zone=external --add-masquerade --permanent --zone=lab-dmz
+firewall-cmd --reload
+
+#Check:
+firewall-cmd --permanent --query-masquerade --zone=lab-dmz
+</code></pre>
+
+<p>Note: This will also configure IP Forwarding</p>
+
+<h4 id="portforwarding">Port forwarding</h4>
+
+<pre><code>firewall-cmd --permanent --zone=lab-dmz --add-forward-port=port=80:proto=tcp:toaddr=172.16.100.50:toport=8080
+</code></pre>
+
+<h4 id="tunnels">Tunnels</h4>
+
+<p>Listen locally on 2222 and tunnels to <code>172.16.1.50</code>, then calling into port 22:</p>
+
+<pre><code>ssh -f -L 2222:localhost:22 ansible@172.16.1.50 -N
+</code></pre>
+
+<h2 id="dhcp">DHCP</h2>
+
+<h3 id="client">Client</h3>
+
+<ul>
+<li>Package: <code>dhclient</code></li>
+</ul>
+
+<p>Configure the appropriate <code>/etc/sysconfig/network-scripts/ifcfg-</code> file with:</p>
+
+<pre><code>BOOTPROTO=&quot;dhcp&quot;
+</code></pre>
+
+<h3 id="server">Server</h3>
+
+<ul>
+<li>Package: <code>dhcp</code></li>
+<li>Configuration: <code>/etc/dhcp/dhcpd.conf</code></li>
+<li>Leases: <code>/var/lib/dhcpd/dhcpd.leases</code></li>
+</ul>
+
+<p>Example config:</p>
+
+<pre><code>option domain-name &quot;lab.example.com&quot;;
+option domain-name-servers ns.lab.example.org;
+shared-network lab {
+  option subnet-mask 255.255.255.0;
+  option domain-search &quot;lab.example.com&quot;;
+  option domain-name-servers 172.16.1.1;
+  option time-servers 172.16.1.1;
+  next-server 172.16.1.1;
+  filename &quot;pxelinux.0&quot;;
+
+#The Internal subnet
+  subnet 172.16.1.0 netmask 255.255.255.0 {
+    option routers 172.16.1.1;
+    range 172.16.1.100 172.16.1.199;
+    #option auto-proxy-config &quot; http://proxy.lab.example.com/proxy/proxy.pac&quot;;
+
+    host canary {
+     option host-name &quot;canaryinternal.lab.example.com&quot;;
+     hardware ethernet 08:00:27:c7:13:9e;
+     fixed-address 172.16.1.50;
+    }
+  }
+}
+</code></pre>
+
+<p>Check the configuration: <code>dhcpd -t -cf /etc/dhcp/dhcpd.conf</code></p>
+
+<h2 id="dns">DNS</h2>
+
+<h3 id="client">Client</h3>
+
+<ul>
+<li>Configuration:
+
+<ul>
+<li><code>/etc/resolv.conf</code></li>
+</ul></li>
+</ul>
+
+<p>Configure the appropriate <code>/etc/sysconfig/network-scripts/ifcfg-</code> file with:</p>
+
+<pre><code>PEERDNS=no
+DNS1=
+DNS2=
+</code></pre>
+
+<p>Or via DHCP.</p>
+
+<h3 id="server">Server</h3>
+
+<ul>
+<li>Packages: <code>bind bind-utils</code></li>
+<li>Configuration:
+
+<ul>
+<li><code>/etc/named.conf</code> - primary configuration</li>
+<li><code>/var/named</code> - configuration items</li>
+</ul></li>
+<li>Log: <code>/var/named/data/named.run</code></li>
+<li>Samples: <code>/usr/share/doc/bind-9.9.4/sample/</code></li>
+</ul>
+
+<h4 id="options">Options</h4>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>listen-on port 53 { 172.16.1.1; 127.0.0.1; };</code> </td>
+	<td> Sets port and host address</td>
+</tr>
+<tr>
+	<td><code>allow-query     { 172.16.0.0/16; 127.0.0.1; };</code></td>
+	<td> The hosts the server will respond to</td>
+</tr>
+<tr>
+	<td><code>recursion yes;</code> </td>
+	<td> Provides a caching server</td>
+</tr>
+<tr>
+	<td><code>forwarders {8.8.8.8; 8.8.4.4};</code><br><code>forward only;</code> </td>
+	<td> Configure forwarding</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="createaforwardlookupzone">Create a forward lookup zone</h4>
+
+<p>Add to <code>/etc/named.conf</code>:</p>
+
+<pre><code>zone &quot;lab.example.com.&quot; {
+    type master;
+    file &quot;named.lab&quot;;
+    allow-update { none; };
+};
+</code></pre>
+
+<p>Then in <code>/var/named/named.lab</code>:</p>
+
+<pre><code>$TTL 3H
+$ORIGIN lab.example.com.
+
+lab.example.com. IN SOA router.lab.example.com. root.lab.example.com. (
+    1 ; serial - increment this on changes
+    1D ; refresh
+    1H ; retry
+    1W ; expire
+    3H) ; minimum
+
+lab.example.com. NS router.lab.example.com.
+router A  172.16.1.1
+time  CNAME  router
+centos-mirror CNAME router
+mirror CNAME router
+proxy CNAME router
+mail CNAME router
+lab.example.com. MX 10 mail.lab.example.com
+canaryinternal A 172.16.1.50
+canarydmz A 172.16.100.50
+</code></pre>
+
+<p>Validate:</p>
+
+<ul>
+<li><code>named-checkzone lab.example.com named.lab</code></li>
+<li><code>named-checkconf</code></li>
+</ul>
+
+<h2 id="ldap">LDAP</h2>
+
+<h3 id="client">Client</h3>
+
+<ul>
+<li>Packages: <code>openldap-clients nss-pam-ldapd</code></li>
+<li>Configuration: <code>etc/nsswitch.conf</code></li>
+</ul>
+
+<p>Configuration:</p>
+
+<pre><code># Enable a user's home dir to be created ad-hoc:
+authconfig --enablemkhomedir --update
+
+# Configure LDAP for use User Information and/or Authentication
+authconfig-tui
+</code></pre>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>ldapsearch -x -b 'dc=lab,dc=example,dc=com' '(uid=penguin)'</code> </td>
+	<td> Search for a user</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="kerberos">Kerberos</h2>
+
+<p>Make sure time services are correctly configured.</p>
+
+<h3 id="server">Server</h3>
+
+<p>Configure a Kerberos server via <code>kadmin</code> and <code>kadmin.local</code></p>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>listprincs</code> </td>
+	<td> List principals</td>
+</tr>
+<tr>
+	<td><code>addprinc root/admin</code> </td>
+	<td> Add the <code>root</code> principal with <code>admin</code> rights</td>
+</tr>
+<tr>
+	<td><code>addprinc penguin</code> </td>
+	<td> Add a normal user</td>
+</tr>
+<tr>
+	<td><code>addprinc -randkey host/server2.lab.example.com</code><br><code>ktadd host/server2.lab.example.com</code> </td>
+	<td> Add a server prinipal</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="client">Client</h3>
+
+<ul>
+<li>Packages: <code>krb5-workstation pam_krb5</code></li>
+<li>Configuration:
+
+<ul>
+<li><code>/etc/krb5.conf</code></li>
+<li>Use <code>authconfig-tui</code> to setup Authentication</li>
+</ul></li>
+</ul>
+
+<p>In order to get keys and access systems:</p>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>kinit</code>  </td>
+	<td> Get a ticket</td>
+</tr>
+<tr>
+	<td><code>klist</code>  </td>
+	<td> List current tickets</td>
+</tr>
+<tr>
+	<td><code>kdestroy</code> </td>
+	<td> Removes the ticket</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="enableinssh">Enable in SSH</h3>
+
+<p>Set the following to <code>yes</code> and <code>systemctl reload sshd</code>:</p>
+
+<ul>
+<li><code>GSSAPIAuthentication</code></li>
+<li><code>GSSAPIDelegateCredentials</code></li>
+</ul>
+
+<p>Then:</p>
+
+<pre><code>authconfig --enablekrb5 --update
+</code></pre>
+
+<h2 id="filesystemmanagement">Filesystem management</h2>
+
+<h3 id="acls">ACLs</h3>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>getfacl test.txt</code> </td>
+	<td> List ACLs</td>
+</tr>
+<tr>
+	<td><code>setfacl -m u:puffin:r test.txt</code> </td>
+	<td> Grant read to the <code>puffin</code> user</td>
+</tr>
+<tr>
+	<td><code>setfacl -m g:birds:rw test.txt</code> </td>
+	<td> Grant read/write to the <code>birds</code> group</td>
+</tr>
+<tr>
+	<td><code>setfacl -x g:birds test.txt</code> </td>
+	<td> Removes access from the <code>birds</code> group</td>
+</tr>
+<tr>
+	<td><code>setfacl -b test.txt</code> </td>
+	<td> Removes all ACLs</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="selinux">SELinux</h2>
+
+<p>TODO</p>
+
+<h2 id="storagemanagement">Storage management</h2>
+
+<p>Handy commands:</p>
+
+<ul>
+<li><code>lsof</code>: lists open files</li>
+</ul>
+
+<h3 id="mountingafilesystem">Mounting a filesystem</h3>
+
+<ul>
+<li><code>/mnt</code> is used for temporarily mounting</li>
+<li><code>/mnt/cdrom</code> is usually a symbolic link</li>
+</ul>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>mount</code>     </td>
+	<td> List all currently mounted filesystems</td>
+</tr>
+<tr>
+	<td><code>mount /dev/cdrom /mnt/</code> </td>
+	<td> Mount the CD/DVD to <code>/mnt</code></td>
+</tr>
+<tr>
+	<td><code>umount /mnt</code>   </td>
+	<td> Unmounts the filesystem</td>
+</tr>
+<tr>
+	<td><code>eject /dev/cdrom</code>  </td>
+	<td> Ejects (and unmounts) the CD/DVD</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="fstab">fstab</h3>
+
+<p>XFS example:</p>
+
+<pre><code>UUID=be9df528-6544-4592-99a8-b3a6d223ed3e /var/ftp/pub/distro     xfs     defaults        0 0
+</code></pre>
+
+<h3 id="storagedevices">Storage devices</h3>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>lsblk</code>     </td>
+	<td> Lists block devices</td>
+</tr>
+<tr>
+	<td><code>parted /dev/sdb print</code> </td>
+	<td> Get the partition details for a device</td>
+</tr>
+<tr>
+	<td><code>blkid -o list</code>   </td>
+	<td> Prints block device info, inc fs type and UUID</td>
+</tr>
+<tr>
+	<td><code>shred -v /dev/sdb</code>  </td>
+	<td> Deletes the device</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="partitioning">Partitioning</h3>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>parted /dev/sdb</code> </td>
+	<td> Starts the <code>parted</code> cli for the nominated device</td>
+</tr>
+<tr>
+	<td>cli: <code>print</code>  </td>
+	<td> Info about the device</td>
+</tr>
+<tr>
+	<td>cli: <code>mklabel gtp</code></td>
+	<td> Sets the disk to use the GUID partition table</td>
+</tr>
+<tr>
+	<td>cli: <code>mkpart primary xfs 0% 25%</code> </td>
+	<td> Creates a primary partition with the <code>xfs</code> filesystem</td>
+</tr>
+<tr>
+	<td>cli: <code>rm 1</code> </td>
+	<td> Removes partition 1</td>
+</tr>
+<tr>
+	<td>cli: <code>quit</code> </td>
+	<td> Exits the <code>parted</code> cli</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="xfs">XFS</h3>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>xfs_info /dev/sdb1</code> </td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="systemstoragemanager">System Storage manager</h3>
+
+<p>Install:</p>
+
+<pre><code>yum install system-storage-manager lvm2
+</code></pre>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>ssm list</code> </td>
+	<td> Lists info about detected devices, pools, volumes</td>
+</tr>
+<tr>
+	<td><code>ssm create --fs xfs -s 5G -n centos-distro /dev/sdc1 /dev/sdc2</code> </td>
+	<td> Creates a new 5Gig logical volume in the default pool (<code>lvm_pool</code>). The pool has 2 physical volumes (<code>/dev/sdc1</code>, <code>/dev/sdc2</code>)</td>
+</tr>
+<tr>
+	<td><code>ssm create --fs xfs -s 10G -n squid-cache</code> </td>
+	<td> Creates a new logical volume in the default pool</td>
+</tr>
+<tr>
+	<td><code>ssm mount /dev/lvm-pool/centos-distro /mnt</code> </td>
+	<td> Temporary mount of a logical volume</td>
+</tr>
+</tbody>
+</table>
+
+<p>Example <code>/etc/fstab</code> entry:</p>
+
+<pre><code>/dev/lvm_pool/centos-distro /var/ftp/pub/distro	  xfs	  defaults	  0 0
+</code></pre>
+
+<h3 id="raid">RAID</h3>
+
+<p>Levels:</p>
+
+<ul>
+<li>linear - spans storage over different sized disks</li>
+<li>Raid 0 same as linear but same size disks</li>
+<li>Raid 1 mirror over 2 disks</li>
+<li>Raid 4&#8211;6 data is striped with parity over 3 or more disks</li>
+</ul>
+
+<p>Packages: <code>mdadm</code></p>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>mdadm --create /dev/md0 --verbose --level=mirror --raid-devices=2 /dev/sdb13 /dev/sdb14</code><br><code>mkfs.xfs /dev/md0</code> </td>
+	<td> Create a 2-disk mirror</td>
+</tr>
+<tr>
+	<td><code>mdadm --create /dev/md1 --level 5 --raid-devices=3 /dev/sdb10 /dev/sdb9 /dev/sdb8</code><br><code>mkfs.xfs /dev/md1</code> </td>
+	<td> Create a 3-disk RAID 5 array</td>
+</tr>
+<tr>
+	<td><code>mdadm --detail --scan &gt;&gt; /etc/mdadm.conf</code></td>
+	<td> Configure for assembly at reboot</td>
+</tr>
+<tr>
+	<td><code>mdadm --stop /dev/md0</code> </td>
+	<td> Stop an array</td>
+</tr>
+<tr>
+	<td><code>mdadm --assemble --scan</code> </td>
+	<td> Start an array</td>
+</tr>
+</tbody>
+</table>
+
+<p>To add/replace devices:</p>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>mdadm --manage /dev/md1 --add-spare /dev/sdb7</code><br><code>mdadm --detail /dev/md1</code> </td>
+	<td> Adds a spare device</td>
+</tr>
+<tr>
+	<td><code>mdadm --manage /dev/md1 --replace /dev/sdb9</code> </td>
+	<td> Drops a disk out</td>
+</tr>
+<tr>
+	<td><code>mdadm --detail /dev/md1</code> </td>
+	<td> Checks device status in array</td>
+</tr>
+<tr>
+	<td><code>mdadm --manage /dev/md1 --re-add /dev/sdb9</code> </td>
+	<td> Adds device back as spare</td>
+</tr>
+</tbody>
+</table>
+
+<p>Sample <code>fstab</code> entry:</p>
+
+<pre><code>/dev/md1 /data xfs defaults 0 0
+</code></pre>
+
+<h3 id="iscsiblockstorageserver">iSCSI block storage server</h3>
+
+<ul>
+<li>iSCSI <em>targets</em> are servers that share out block devices</li>
+<li>iSCSI <em>initiators</em> are clients</li>
+</ul>
+
+<h4 id="server">Server</h4>
+
+<p>Packages: <code>targetd targetcli</code></p>
+
+<p>Run <code>targetcli</code> and configure a target:</p>
+
+<pre><code>backstores/block create mediashare /dev/lvm_pool/mediashare
+iscsi/ create iqn.2018-03.com.example.lab.router:media
+cd iscsi/iqn.2018-03.com.example.lab.router:media/tpg1/
+luns/ create /backstores/block/mediashare
+acls/ create iqn.2018-03.com.example.lab.canaryinternal:media
+cd /
+ls
+saveconfig
+exit
+</code></pre>
+
+<h4 id="client">Client</h4>
+
+<p>Packages: <code>iscsi-initiator-utils</code></p>
+
+<p>Configure the initiator name: <code>/etc/iscsi/initiatorname.iscsi</code></p>
+
+<pre><code>InitiatorName=iqn.2018-03.com.example.lab.canaryinternal:media
+</code></pre>
+
+<p>Then access the portal:</p>
+
+<pre><code>iscsiadm -m discovery -t st -p 172.16.1.1
+</code></pre>
+
+<p>and connect:</p>
+
+<pre><code>iscsiadm -m node -T iqn.2018-03.com.example.lab.router:media -l 
+
+iscsiadm --mode node --targetname iqn.2018-03.com.example.lab.router:media -l
+
+# Create a filesystem
+mkfs.xfs /dev/sdc
+</code></pre>
+
+<p>To disconnect:</p>
+
+<pre><code>iscsiadm -m node -T iqn.2018-03.com.example.lab.router:media -u
+</code></pre>
+
+<h3 id="nfs">NFS</h3>
+
+<p>Packages: <code>nfs-utils</code>
+Configuration: <code>/etc/exports/</code>
+Services:
+- <code>nfs-server</code>
+- <code>rpcbind</code></p>
+
+<p>Sample <code>/etc/exports/</code> entry:</p>
+
+<pre><code>/share/nfs *(ro)
+</code></pre>
+
+<p>Export shares using:</p>
+
+<pre><code>exportfs -r
+</code></pre>
+
+<p>Mount the share:</p>
+
+<pre><code>mount -t nfs server2.lab.example.com:/share/nfs /mnt
+</code></pre>
+
+<h3 id="autofs">AutoFS</h3>
+
+<p>Package: <code>autofs</code>
+Configuration: <code>/etc/auto.misc</code></p>
+
+<p>Add an automount to <code>/etc/auto.misc</code>:</p>
+
+<pre><code>nfsshare        -ro,soft,intr           server1.lab.example.com:/share/nfs
+</code></pre>
+
+<p>This will appear in <code>/misc/nfsshare</code></p>
+
+<p>###CIFS</p>
+
+<h2 id="grub">GRUB</h2>
+
+<ul>
+<li>Configuration:
+
+<ul>
+<li><code>/etc/default/grub</code></li>
+<li><code>/boot/grub2/grub.cfg</code></li>
+<li><code>/etc/grub.d/</code></li>
+</ul></li>
+</ul>
+
+<table>
+<colgroup>
+<col />
+<col />
+</colgroup>
+
+<thead>
+<tr>
+	<th>Command  </th>
+	<th> Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td><code>grubby --default-kernel</code> </td>
+	<td> Displays the default kernel</td>
+</tr>
+<tr>
+	<td><code>grubby --set-default /boot/&lt;kernel&gt;</code> </td>
+	<td> Change the default</td>
+</tr>
+<tr>
+	<td><code>grubby --info=ALL</code> </td>
+	<td> Info for all known kernels</td>
+</tr>
+<tr>
+	<td><code>grubby --info /boot/&lt;kernel&gt;</code> </td>
+	<td> get info about a specific kernel</td>
+</tr>
+<tr>
+	<td><code>grubby --remove-args=“rhgb quiet” —update-kernel /boot/&lt;kernel&gt;</code> </td>
+	<td> Change a kernel arg</td>
+</tr>
+<tr>
+	<td><code>grub2-mkconfig -o /boot/grub2/grub.cfg</code> </td>
+	<td> Used when changing config files outside <code>grubby</code></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="pxeboot">PXE Boot</h2>
+
+<p>Packages: <code>syslinux tftp tftp-server</code></p>
+
+<p>Copy across files:</p>
+
+<pre><code>cp /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot/
+cp /usr/share/syslinux/menu.c32 /var/lib/tftpboot/
+</code></pre>
+
+<p>From, the ISO, also copy <code>vmlinuz</code> and <code>initrd.img</code></p>
+
+<p>Start the tftp server</p>
+
+<pre><code>systemctl start tftp.socket
+systemctl enable tftp.socket
+</code></pre>
+
+<h3 id="dhcp">DHCP</h3>
+
+<p>Edit <code>/etc/dhcp/dhcp.conf</code> and in the subnet config, add:</p>
+
+<pre><code>next-server &lt;ip of pxe server&gt;;
+filename “pxelinux.0”;
+</code></pre>
+
+<p>Test the config and restart:</p>
+
+<pre><code>dhcpd -t -cf /etc/dhcp/dhcp.conf
+systemctl restart dhcpd
+</code></pre>
+
+<h3 id="pxebootmenu">PXE Boot menu</h3>
+
+<p>Configuration file: <code>/var/lib/tftpboot/pxelinux.cfg/default</code></p>
+
+<p>Example:</p>
+
+<pre><code>default menu.32
+prompt 0
+timeout  1000
+ontimeout local
+
+menu title Boot menu
+ 
+label local
+    menu Boot from local disk
+    LOCALBOOT 0
+</code></pre>
+</body>
+</html>

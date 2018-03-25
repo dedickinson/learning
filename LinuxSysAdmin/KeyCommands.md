@@ -893,3 +893,92 @@ Configuration: `/etc/vsftpd/vsftpd.conf`
 Package: `mariadb-server`
 
 ### HTTP
+
+Packages: `httpd`
+
+Firewall:
+
+    firewall-cmd --add-service={http,https} --permanent
+
+#### SSL
+
+Package: `httpd`
+
+Configuration: `/etc/httpd/conf.d/ssl.conf`
+
+Create a key and add it:
+
+    openssl req -new -nodes -x509 -keyout canary.key -out canary.crt
+    chmod 400 canary.key canary.crt
+    cp canary.crt /etc/pki/tls/certs/
+    cp canary.key /etc/pki/tls/private/
+
+#### PHP
+
+Package: `httpd mod_php`
+
+Configuration: `/etc/httpd/conf.d/php.conf`
+
+### Mail
+
+Package: `postfix`
+
+Configuration: `/etc/postfix/main.cf`
+
+Sample MX entry:
+
+    lab.example.com. MX 10 mail.lab.example.com
+
+Aliases in `/etc/aliases` - run `newaliases` after edits.
+
+#### SMTP Relay
+
+On the host mail server:
+
+    postconf -e inet_protocols=ipv4
+    postconf -e inet_interfaces=all
+    postconf -e mydestination=localhost,lab.example.com,router.lab.example.com
+    systemctl restart postfix
+
+    firewall-cmd --add-service=smtp --permanent
+    firewall-cmd --reload
+
+    postconf mynetworks
+
+On the client:
+
+    postconf -e inet_protocols=ipv4
+    postconf -e inet_interfaces=all
+    postconf -e relayhost=mail.lab.example.com
+    postfix check
+    systemctl restart postfix
+
+#### IMAP
+
+Package: `dovecot`
+
+Configuration: 
+    - `/etc/dovecot/dovecot.conf`
+    - `/etc/dovecot/conf.d`
+
+Firewall:
+
+    firewall-cmd --add-service={imap,imaps} --permanent --zone=lab-internal
+    firewall-cmd --reload
+
+In `/etc/dovecot/dovecot.conf`:
+
+    protocols = imap pop3 lmtp
+    listen = *
+
+In `/etc/dovecot/conf.d/10-mail.conf`:
+
+    mail_location = mbox:~/mail:INBOX=/var/mail/%u
+
+Add appropriate users to the `mail` group:
+
+    usermod -a -G mail puffin
+
+Check with `mutt`:
+
+    mutt -f imaps://user@hostname/
