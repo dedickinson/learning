@@ -2,7 +2,7 @@
 
 ## KVM
 
-Run lscpu to check on hardware
+Run `lscpu` to check on hardware
 
     lscpu
 
@@ -15,8 +15,6 @@ Check that time is accurate
     ntpq -p
 
     cat /etc/ntp.conf
-
-    
 
 ## XRDP
 

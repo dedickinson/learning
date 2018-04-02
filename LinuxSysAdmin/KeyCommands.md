@@ -198,6 +198,7 @@ Command     | Description
 `yum list installed`  | List all installed packages
 `yum whatprovides lsof` | Lists the package providing a file/app (e.g. `lsof`)
 `yum update kernel`     | Update the kernel
+`yum groups list`         | List all group installs
 
 ### Source packages
 
@@ -530,6 +531,21 @@ Command     | Description
 `setfacl -x g:birds test.txt` | Removes access from the `birds` group
 `setfacl -b test.txt` | Removes all ACLs
 
+## Quotas
+
+`fstab` options: `uquota`, `gquota`, `pquota`, `uqnoenforce`
+
+Command     | Description
+------------|------------------------
+`xfs_quota -x` | Starts the CLI in exper mode
+`xfs_quota -xc 'report -ah' ` | Summary report
+`xfs_quota -xc 'limit -u bsoft=30m bhard=35m puffin' /data/data2` | Applies a quota
+`xfs_quota -c 'quota -uh puffin'` | Displays puffin's quotas
+
+Create a dummy file with:
+
+    dd if=/dev/zero of=/data/mydata/blob count=1 bs=20M
+
 ## SELinux
 
 Configuration: 
@@ -645,7 +661,6 @@ cli: `rm 1` | Removes partition 1
 cli: `quit` | Exits the `parted` cli
 
 
-
 ### XFS
 
 Command     | Description
@@ -668,6 +683,30 @@ Command     | Description
 Example `/etc/fstab` entry:
 
     /dev/lvm_pool/centos-distro /var/ftp/pub/distro	  xfs	  defaults	  0 0
+
+### Encrypted volumes
+
+Create an encrypted volume using
+
+    ssm -e luks -n securestore --fstype xfs -p <pool> /dev/sdb<x>
+
+To mount and unmount:
+
+    # To open and mount
+    cryptsetup open /dev/mapper/lvm_pool-securestore
+    mount /dev/mapper/securestore /mnt
+    
+    # To unmount and close
+    umount /mnt
+    cryptsetup close securestore
+
+Run `blkid|grep LUKS` to get the UUID to add to `/etc/crypttab`:
+
+    securestore UUID=<UUID>
+
+Then in `/etc/fstab`:
+
+    /dev/mapper/securestore /shares/securestore xfs defaults 0 0
 
 ### RAID
 
@@ -900,9 +939,17 @@ Firewall:
 
     firewall-cmd --add-service={http,https} --permanent
 
+Basic auth config:
+
+    AuthType Basic
+    AuthName "Restricted"
+    AuthBasicProvider file
+    AuthUserFile /etc/httpd/htpasswd
+    Require valid-user
+
 #### SSL
 
-Package: `httpd`
+Package: `mod-ssl`
 
 Configuration: `/etc/httpd/conf.d/ssl.conf`
 
@@ -982,3 +1029,54 @@ Add appropriate users to the `mail` group:
 Check with `mutt`:
 
     mutt -f imaps://user@hostname/
+
+### DNSMasq
+
+Packages:
+
+- `dnsmasq`
+
+Configuration: `/etc/dnsmasq.conf`
+
+### Cockpit
+
+Packages:
+
+- `cockpit-*`
+
+## Virtualisation
+
+Packages: 
+
+- `libvirt`
+- `qemu-kvm`
+- `virt-install`
+- `virt-manager` (GUI)
+
+Configuration:
+
+- `/etc/libvirt`
+
+Create a virtual machine: 
+
+    virt-install --name testvm --hvm --ram=512 --vcpus=1 --os-type=Linux --os-variant=rhel7 --disk path=/var/lib/libvirt/images/testvm.qcow2,size=5 --pxe --network=default
+
+    undefine testvm --remove-all-storage
+
+## Install X-Windows and MATE
+
+Install Virtual Box additions (CLI):
+
+    sudo mount /dev/cdrom /media/cdrom
+    cd /media/cdrom
+    sudo ./VboxLinuxAdditions.run
+
+
+Install MATE Desktop:
+
+    yum install epel-release
+    yum groupinstall "X Window System"
+    yum groupinstall "MATE Desktop"
+
+    systemctl isolate graphical.target
+    systemctl set-default graphical.target
