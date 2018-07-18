@@ -1,0 +1,59 @@
+az group create --location australiaeast --name basic-vm
+
+# List the skus we have available to us
+az vm list-skus --location australiaeast
+
+# .. or List the possible VM sizes
+az vm list-sizes --location australiaeast
+
+# Determine the image
+az vm image list --location australiaeast --output table
+az vm image list --location australiaeast --offer CentOS --output table
+
+az vm image show --location australiaeast --urn OpenLogic:CentOS:7.3:latest
+
+# Create the VM - I'll use Standard_B1ms
+
+## First, get the VNet's ID
+#MY_VNETID=$(az network vnet show --name labnet --resource-group lab-vnet | jq -r .id)
+#echo $MY_VNETID
+
+# We need the subnet ID for a subnet in another resource group
+MY_PRIVATE_SUBNET_ID=$(az network vnet subnet show --resource-group lab-vnet --vnet-name labnet --name private| jq -r .id)
+echo $MY_PRIVATE_SUBNET_ID
+
+MY_PRIVATE_NSG_ID=$(az network nsg show --resource-group lab-vnet --name private-nsg| jq -r .id)
+echo $MY_PRIVATE_NSG_ID
+
+az vm create --name basic-centos --resource-group basic-vm --no-wait \
+    --size Standard_B1ms --image centos \
+    --subnet $MY_PRIVATE_SUBNET_ID \
+    --nsg $MY_PRIVATE_NSG_ID \
+    --admin-username local-admin --ssh-key-value @~/.ssh/azurelab.pub
+
+# SSH in
+MY_VMIP=$(az vm show  --show-details --resource-group basic-vm --name basic-centos | jq -r .publicIps)
+echo $MY_VMIP
+ssh -i ~/.ssh/azurelab local-admin@$MY_VMIP
+
+# Add some extras
+
+## Setup boot diagnostics
+az storage account create --resource-group basic-vm --name basicvmsa --kind StorageV2 --https-only true
+
+az vm boot-diagnostics enable --name basic-centos --resource-group basic-vm --storage https://basicvmsa.blob.core.windows.net/
+
+## Which extensions could we use?
+az vm extension image list --location australiaeast --latest --output table
+az vm extension image show --location australiaeast --name LinuxDiagnostic --publisher Microsoft.Azure.Diagnostics --version 3.0.113
+
+az vm extension set --name LinuxDiagnostic --publisher Microsoft.Azure.Diagnostics --version 3.0.113 --resource-group basic-vm --vm-name basic-centos
+
+# Run a command
+az vm run-command invoke --resource-group basic-vm --name basic-centos --command-id RunShellScript --scripts "whoami"
+
+# Deallocate
+az vm deallocate --name basic-centos --resource-group basic-vm
+
+# Clean
+az group delete --name basic-vm --no-wait --yes 

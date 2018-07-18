@@ -1,0 +1,13 @@
+az group create --location australiaeast --name management
+
+# Create a Storage Account for various logs
+az storage account create --resource-group management --name azurelabsamgmt --kind StorageV2 \
+    --sku Standard_LRS --https-only true --encryption-services blob --encryption-services file 
+
+# Create a Key Vault for use in provisioning VMs etc
+az keyvault create --name kvmgmt --resource-group management 
+
+## Upload an SSH Public key for use - https://docs.microsoft.com/en-us/azure/virtual-machines/linux/key-vault-setup
+az keyvault update --name kvmgmt --resource-group management --set properties.enabledForDeployment=true
+
+az keyvault secret set --vault-name kvmgmt --name sshpubkey --value @~/.ssh/azurelab.pub

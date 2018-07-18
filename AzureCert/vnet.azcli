@@ -11,8 +11,41 @@ az network vnet create --name labnet --resource-group lab-vnet --address-prefixe
 az network vnet subnet create --name public --address-prefix 10.0.1.0/24 --resource-group lab-vnet --vnet-name labnet
 az network vnet subnet create --name private --address-prefix 10.0.2.0/24 --resource-group lab-vnet --vnet-name labnet
 
-# Create the NSGs
+# Configure Endpoints
 
+## Get a list of endpoints
+az network vnet list-endpoint-services --location australiaeast
+
+az network vnet subnet update --resource-group lab-vnet --vnet-name labnet --name public --service-endpoints Microsoft.Storage Microsoft.KeyVault Microsoft.Sql
+az network vnet subnet update --resource-group lab-vnet --vnet-name labnet --name private --service-endpoints Microsoft.Storage Microsoft.KeyVault Microsoft.Sql
+
+# Create the NSGs
+az network nsg create --name public-web-nsg --resource-group lab-vnet
+az network nsg create --name private-nsg --resource-group lab-vnet
+
+## Configure rules
+
+### This gets your machine's public IP
+MY_IP=$(curl -s http://ip.42.pl/short)
+
+az network nsg rule create --name ssh --nsg-name private-nsg --priority 100 --resource-group lab-vnet \
+    --access Allow --direction Inbound \
+    --source-address-prefixes $MY_IP --protocol TCP \
+    --destination-address-prefixes '*' --destination-port-ranges '22' \
+    --description "Allow SSH Access from home IP"
+
+az network nsg rule create --name ssh --nsg-name public-web-nsg --priority 100 --resource-group lab-vnet \
+    --access Allow --direction Inbound \
+    --source-address-prefixes $MY_IP --protocol TCP \
+    --destination-address-prefixes '*' --destination-port-ranges '22' \
+    --description "Allow SSH Access from home IP"
+
+### Apply the NSGs
+az network vnet subnet update --resource-group lab-vnet --vnet-name labnet --name public --network-security-group public-web-nsg
+az network vnet subnet update --resource-group lab-vnet --vnet-name labnet --name private --network-security-group private-nsg
+
+## Setup NetworkWatcher
+az network watcher configure --locations australiaeast --resource-group lab-vnet --enabled true
 
 # Export a template
 az group export --resource-group lab-vnet
