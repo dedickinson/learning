@@ -22,7 +22,9 @@ With CLI:
 
 Powershell:
 
+    Connect-AzureRMAccount
 
+## Doing stuff in `az` cli
 
-## Resource Groups
+- Create a resource group and virtual network: [`vnet.azcli`](vnet.azcli)
 

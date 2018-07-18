@@ -1,0 +1,18 @@
+# Login
+# az login
+
+# Create the resource group
+az group create --location australiaeast --name lab-vnet
+
+# Create the VNet
+az network vnet create --name labnet --resource-group lab-vnet --address-prefixes 10.0.0.0/16
+
+# Create the Subnets
+az network vnet subnet create --name public --address-prefix 10.0.1.0/24 --resource-group lab-vnet --vnet-name labnet
+az network vnet subnet create --name private --address-prefix 10.0.2.0/24 --resource-group lab-vnet --vnet-name labnet
+
+# Create the NSGs
+
+
+# Export a template
+az group export --resource-group lab-vnet
