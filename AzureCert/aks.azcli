@@ -1,0 +1,24 @@
+RESOURCE_GROUP=aks
+AKS_CLUSTER_NAME=akscluster
+
+MY_PUBLIC_SUBNET_ID=$(az network vnet subnet show --resource-group lab-vnet --vnet-name labnet --name public| jq -r .id)
+echo $MY_PUBLIC_SUBNET_ID
+
+az group create --location australiaeast --name $RESOURCE_GROUP
+
+az aks create --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME \
+    --admin-username local-admin --ssh-key-value @~/.ssh/azurelab.pub \
+    --node-vm-size Standard_D2_v3 \
+    --node-count 1 
+
+az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME
+
+kubectl get nodes
+
+kubectl apply -f azure-aks-poll.yaml
+
+kubectl get service azure-vote-front --watch
+
+az aks delete --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER_NAME
+
+az group delete --name $RESOURCE_GROUP
