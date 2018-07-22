@@ -8,9 +8,11 @@ az vm list-sizes --location australiaeast
 
 # Determine the image
 az vm image list --location australiaeast --output table
-az vm image list --location australiaeast --offer CentOS --output table
+az vm image list --location australiaeast --offer centos --all --output table
 
-az vm image show --location australiaeast --urn OpenLogic:CentOS:7.3:latest
+az vm image list --location australiaeast --publisher Rogue --all --output table
+
+az vm image show --location australiaeast --urn OpenLogic:CentOS:7.5:latest
 
 # Create the VM - I'll use Standard_B1ms
 
@@ -26,7 +28,7 @@ MY_PRIVATE_NSG_ID=$(az network nsg show --resource-group lab-vnet --name private
 echo $MY_PRIVATE_NSG_ID
 
 az vm create --name basic-centos --resource-group basic-vm --no-wait \
-    --size Standard_B1ms --image centos \
+    --size Standard_B1ms --image OpenLogic:CentOS:7.5:latest \
     --subnet $MY_PRIVATE_SUBNET_ID \
     --nsg $MY_PRIVATE_NSG_ID \
     --admin-username local-admin --ssh-key-value @~/.ssh/azurelab.pub

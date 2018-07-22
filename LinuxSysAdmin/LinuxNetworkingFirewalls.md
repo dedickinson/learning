@@ -27,7 +27,7 @@ When making changes, include the `permanent` switch to survive reboot:
 ### Setting rules
 
 * firewall-cmd —list-all
-* firewall-cmd —permanent —remove-service=ssh
+* firewall-cmd --permanent --remove-service=ssh
     * firewall-cmd —reload
     * can pass array of services []
 

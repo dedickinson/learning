@@ -1,0 +1,64 @@
+RESOURCE_GROUP=nginx-scaleset
+IMAGE_NAME=CentOS7Nginx
+VMSS_NAME=nginxvmss
+LB_NAME=nginxvmsslb
+PIP_NAME=nginxvmsspip
+
+IMAGE_ID=$(az image show --name $IMAGE_NAME --resource-group vm-image-builder | jq -r .id)
+echo $IMAGE_ID
+
+MY_PUBLIC_SUBNET_ID=$(az network vnet subnet show --resource-group lab-vnet --vnet-name labnet --name public| jq -r .id)
+echo $MY_PUBLIC_SUBNET_ID
+
+MY_PUBLIC_NSG_ID=$(az network nsg show --resource-group lab-vnet --name public-web-nsg| jq -r .id)
+echo $MY_PUBLIC_NSG_ID
+
+MY_PRIVATE_SUBNET_ID=$(az network vnet subnet show --resource-group lab-vnet --vnet-name labnet --name private| jq -r .id)
+echo $MY_PRIVATE_SUBNET_ID
+
+MY_PRIVATE_NSG_ID=$(az network nsg show --resource-group lab-vnet --name private-nsg| jq -r .id)
+echo $MY_PRIVATE_NSG_ID
+
+az group create --location australiaeast --name $RESOURCE_GROUP
+
+az network public-ip create --name $PIP_NAME --resource-group $RESOURCE_GROUP --dns-name nginxvmss --sku Standard
+
+az network lb create --name $LB_NAME --resource-group $RESOURCE_GROUP \
+    --sku Standard --backend-pool-name nginx-backend \
+    --frontend-ip-name nginx-frontip --public-ip-address $PIP_NAME
+
+az network lb probe create \
+    --resource-group $RESOURCE_GROUP \
+    --lb-name $LB_NAME \
+    --name httpProbe \
+    --protocol http \
+    --port 80 --path /
+
+az network lb rule create \
+  --resource-group $RESOURCE_GROUP \
+  --name $LB_NAME-webrule \
+  --lb-name $LB_NAME \
+  --backend-pool-name nginx-backend \
+  --backend-port 80 \
+  --frontend-ip-name nginx-frontip \
+  --frontend-port 80 \
+  --protocol tcp \
+  --probe-name httpProbe
+
+az vmss create --image $IMAGE_ID --name $VMSS_NAME --resource-group $RESOURCE_GROUP \
+    --admin-username local-admin --ssh-key-value @~/.ssh/azurelab.pub \
+    --subnet $MY_PUBLIC_SUBNET_ID --nsg $MY_PUBLIC_NSG_ID \
+    --instance-count 2 --vm-sku Standard_B1ms \
+    --load-balancer $LB_NAME   \
+    --public-ip-address "" # --validate
+
+az vmss scale --name $VMSS_NAME
+              --new-capacity 2
+              --resource-group $RESOURCE_GROUP
+
+
+az network lb address-pool show --lb-name $LB_NAME --resource-group $RESOURCE_GROUP -n nginx-backend
+
+az network lb probe show --lb-name $LB_NAME --resource-group $RESOURCE_GROUP -n httpProbe
+
+az group delete --name $RESOURCE_GROUP --no-wait --yes 

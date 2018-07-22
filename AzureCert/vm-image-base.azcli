@@ -1,0 +1,57 @@
+RESOURCE_GROUP=vm-image-builder
+VM_NAME=base-centos-image
+
+az group create --location australiaeast --name $RESOURCE_GROUP
+
+## We need the subnet ID for a subnet in another resource group
+MY_PRIVATE_SUBNET_ID=$(az network vnet subnet show --resource-group lab-vnet --vnet-name labnet --name private| jq -r .id)
+echo $MY_PRIVATE_SUBNET_ID
+
+MY_PRIVATE_NSG_ID=$(az network nsg show --resource-group lab-vnet --name private-nsg| jq -r .id)
+echo $MY_PRIVATE_NSG_ID
+
+az vm create --name $VM_NAME --resource-group $RESOURCE_GROUP \
+    --size Standard_D2s_v3 --image OpenLogic:CentOS:7.5:latest \
+    --subnet $MY_PRIVATE_SUBNET_ID \
+    --nsg $MY_PRIVATE_NSG_ID \
+    --admin-username local-admin --ssh-key-value @~/.ssh/azurelab.pub
+
+MY_VMIP=$(az vm show --show-details --resource-group $RESOURCE_GROUP --name $VM_NAME | jq -r .publicIps)
+
+az vm extension set --name LinuxDiagnostic --publisher Microsoft.Azure.Diagnostics --version 3.0.113 --resource-group $RESOURCE_GROUP --vm-name $VM_NAME
+az vm boot-diagnostics enable --name $VM_NAME --resource-group $RESOURCE_GROUP --storage https://azurelabsamgmt.blob.core.windows.net/
+
+## I found that, without this, the run-command wouldn't handle the script file param
+#az vm extension set --name CustomScriptForLinux --publisher Microsoft.OSTCExtensions --version 1.5.2.2 --resource-group $RESOURCE_GROUP --vm-name $VM_NAME
+
+## Prep the VM with cloud-init
+#az vm run-command invoke --name $VM_NAME --resource-group $RESOURCE_GROUP --command-id RunShellScript  --scripts @./centos_update.sh
+#az vm run-command invoke --name $VM_NAME --resource-group $RESOURCE_GROUP --command-id RunShellScript  --scripts @./prep_cloud_init.sh
+
+ssh -i ~/.ssh/azurelab -t local-admin@$MY_VMIP <<EOF
+sudo yum update -y
+sudo yum install -y epel-release
+sudo yum -y clean all
+sudo rm -rf /var/cache/yum
+sudo waagent -deprovision+user -force
+EOF
+
+
+## Create the base image
+### Azure will (mostly) gracefully shoutdown the VM: https://azure.microsoft.com/en-au/blog/linux-and-graceful-shutdowns-2/
+az vm deallocate --resource-group $RESOURCE_GROUP --name $VM_NAME
+az vm generalize --resource-group $RESOURCE_GROUP --name $VM_NAME
+az image create --resource-group $RESOURCE_GROUP --name CentOS7Base --source $VM_NAME
+
+# SSH in
+MY_VMIP=$(az vm show  --show-details --resource-group $RESOURCE_GROUP --name $VM_NAME | jq -r .publicIps)
+echo $MY_VMIP
+ssh -i ~/.ssh/azurelab local-admin@$MY_VMIP
+
+
+
+# Deallocate
+az vm deallocate --name $VM_NAME --resource-group $RESOURCE_GROUP
+
+# Clean
+az group delete --name $RESOURCE_GROUP --no-wait --yes 

@@ -40,6 +40,12 @@ az network nsg rule create --name ssh --nsg-name public-web-nsg --priority 100 -
     --destination-address-prefixes '*' --destination-port-ranges '22' \
     --description "Allow SSH Access from home IP"
 
+az network nsg rule create --name web --nsg-name public-web-nsg --priority 200 --resource-group lab-vnet \
+    --access Allow --direction Inbound \
+    --source-address-prefixes $MY_IP --protocol TCP \
+    --destination-address-prefixes '*' --destination-port-ranges 80 443 \
+    --description "Allow Web Access from home IP"
+
 ### Apply the NSGs
 az network vnet subnet update --resource-group lab-vnet --vnet-name labnet --name public --network-security-group public-web-nsg
 az network vnet subnet update --resource-group lab-vnet --vnet-name labnet --name private --network-security-group private-nsg

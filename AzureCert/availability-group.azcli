@@ -1,0 +1,36 @@
+# This is an example - it just creates and availability set and puts two vms into it
+
+RESOURCE_GROUP=nginx-availabilityset
+IMAGE_NAME=CentOS7Nginx
+VM_NAME=nginxag
+AVAILABILITY_SET=nginxAvailabilitySet
+
+az group create --location australiaeast --name $RESOURCE_GROUP
+
+## We need the subnet ID for a subnet in another resource group
+MY_PUBLIC_SUBNET_ID=$(az network vnet subnet show --resource-group lab-vnet --vnet-name labnet --name public| jq -r .id)
+echo $MY_PUBLIC_SUBNET_ID
+
+MY_PUBLIC_NSG_ID=$(az network nsg show --resource-group lab-vnet --name public-nsg| jq -r .id)
+echo $MY_PUBLIC_NSG_ID
+
+az vm availability-set create \
+    --resource-group $RESOURCE_GROUP \
+    --name $AVAILABILITY_SET \
+    --platform-fault-domain-count 2 \
+    --platform-update-domain-count 2
+
+IMAGE_ID=$(az image show --name $IMAGE_NAME --resource-group vm-image-builder | jq -r .id)
+echo $IMAGE_ID
+
+for i in `seq 1 2`; do
+    az vm create --name $VM_NAME$i --resource-group $RESOURCE_GROUP --no-wait \
+        --size Standard_B1ms --image $IMAGE_ID \
+        --subnet $MY_PUBLIC_SUBNET_ID \
+        --nsg $MY_PUBLIC_NSG_ID \
+        --admin-username local-admin --ssh-key-value @~/.ssh/azurelab.pub \
+        --availability-set $AVAILABILITY_SET # --public-ip-address ""
+done
+
+
+az group delete --name $RESOURCE_GROUP --no-wait --yes 

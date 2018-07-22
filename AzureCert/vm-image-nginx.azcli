@@ -1,0 +1,59 @@
+RESOURCE_GROUP=vm-image-builder
+VM_NAME=nginx-centos-image
+
+## We need the subnet ID for a subnet in another resource group
+MY_PRIVATE_SUBNET_ID=$(az network vnet subnet show --resource-group lab-vnet --vnet-name labnet --name private| jq -r .id)
+echo $MY_PRIVATE_SUBNET_ID
+
+MY_PRIVATE_NSG_ID=$(az network nsg show --resource-group lab-vnet --name private-nsg| jq -r .id)
+echo $MY_PRIVATE_NSG_ID
+
+az vm create --name $VM_NAME --resource-group $RESOURCE_GROUP \
+    --size Standard_B1ms --image CentOS7Base \
+    --subnet $MY_PRIVATE_SUBNET_ID \
+    --nsg $MY_PRIVATE_NSG_ID \
+    --admin-username local-admin --ssh-key-value @~/.ssh/azurelab.pub
+
+MY_VMIP=$(az vm show --show-details --resource-group $RESOURCE_GROUP --name $VM_NAME | jq -r .publicIps)
+
+ssh -i ~/.ssh/azurelab -t local-admin@$MY_VMIP <<EOF
+sudo systemctl enable firewalld
+sudo systemctl start firewalld
+sudo firewall-cmd --add-service=ssh --permanent
+sudo firewall-cmd --add-service=http --permanent
+sudo systemctl restart firewalld
+EOF
+
+scp -i ~/.ssh/azurelab files/nginx/* local-admin@$MY_VMIP:/home/local-admin/
+
+ssh -i ~/.ssh/azurelab -t local-admin@$MY_VMIP <<EOF
+sudo yum install -y nginx policycoreutils-python
+
+sudo mv /home/local-admin/nginx.conf /etc/nginx/
+sudo chown root.root /etc/nginx/nginx.conf
+sudo semanage fcontext -a -t httpd_sys_content_t  /etc/nginx/nginx.conf
+sudo restorecon /etc/nginx/nginx.conf
+
+# Now sort out the index file
+sudo mv /home/local-admin/index.html /usr/share/nginx/html/
+sudo chown root.root /usr/share/nginx/html/index.html
+sudo semanage fcontext -a -t httpd_sys_content_t /usr/share/nginx/html/index.html
+sudo restorecon /usr/share/nginx/html/index.html
+
+# and get nginx going
+sudo systemctl enable nginx
+sudo systemctl start nginx
+EOF
+
+# Prep for creating the image
+ssh -i ~/.ssh/azurelab -t local-admin@$MY_VMIP <<EOF
+sudo waagent -deprovision+user -force
+EOF
+
+
+## Create the base image
+### Azure will (mostly) gracefully shoutdown the VM: https://azure.microsoft.com/en-au/blog/linux-and-graceful-shutdowns-2/
+az vm deallocate --resource-group $RESOURCE_GROUP --name $VM_NAME
+az vm generalize --resource-group $RESOURCE_GROUP --name $VM_NAME
+az image create --resource-group $RESOURCE_GROUP --name CentOS7Nginx --source $VM_NAME
+

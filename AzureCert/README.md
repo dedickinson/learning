@@ -29,4 +29,16 @@ Powershell:
 1. Create a resource group and virtual network: [`vnet.azcli`](vnet.azcli)
     - The script exports [the basic-vnet template](templates/basic-vnet.json) that will be used later to create a failover environment
 1. Setup a basic Linux VM: [`vm.azcli`](vm.azcli)
-1. Now get serious and create a management resource group and some resources for further work: [`management.azcli`](management.azcli)
+1. Create a management resource group and some resources for further work: [`management.azcli`](management.azcli)
+
+### Creating a CentOS 7 image
+
+Extend the basic VM example to create an image: [`vm-image.azcli`](vm-image.azcli)
+
+Logs are in `/var/log/cloud-init-output.log`
+
+Reference: https://docs.microsoft.com/en-us/azure/virtual-machines/linux/cloudinit-prepare-custom-image
+
+### Scaleset with Load Balancer
+
+See [`scaleset.azcli`](scaleset.azcli)
