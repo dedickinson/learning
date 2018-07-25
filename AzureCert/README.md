@@ -42,3 +42,14 @@ Reference: https://docs.microsoft.com/en-us/azure/virtual-machines/linux/cloudin
 ### Scaleset with Load Balancer
 
 See [`scaleset.azcli`](scaleset.azcli)
+
+### Kubernetes
+
+See [`aks.cli`](aks.cli)
+
+### DSC
+
+Refs: 
+
+- https://docs.microsoft.com/en-us/azure/automation/automation-dsc-getting-started
+- https://docs.microsoft.com/en-us/powershell/dsc/quickstart
