@@ -49,6 +49,15 @@ See [`aks.cli`](aks.cli)
 
 ### DSC
 
+1. Create an Azure Files share
+1. Add the username/password to the Automation Account credentials
+    1. Use the username/password provided in the Linux connection details for the share
+    1. The username is the name of the storage account
+1. Create a new DSC config using [`Website.ps1`](dsc-iis/Website.ps1). Compile it with the required parameters
+    1. CREDENTIALSNAME: _The name of the Automation Account credential you created_
+    1. WEBFILESPATH: `\\<Storage Account Name>.file.core.windows.net\<Share Name>`
+1. Assign to your Windows VM of choice
+
 Refs: 
 
 - https://docs.microsoft.com/en-us/azure/automation/automation-dsc-getting-started
